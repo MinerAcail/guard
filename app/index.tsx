@@ -1,46 +1,32 @@
 import React from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
 
-const navBox = [
-  {
-    title: "Home",
-    icon: "home",
-    screen: "HomeScreen",
-  },
-  {
-    title: "Parent",
-    icon: "comments",
-    screen: "MessagesScreen",
-  },
-  {
-    title: "Profile",
-    icon: "user",
-    screen: "ProfileScreen",
-  },
-  {
-    title: "Settings",
-    icon: "cog",
-    screen: "SettingsScreen",
-  },
+} from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import { NavBox } from "@/components/data/navdata";
+
+
+
+
+const descriptions = [
+  "Academic Calendar",
+  "Announcement",
+  "Direct Communication",
 ];
 
-const descriptions = ["Academic Calendar", "Announcement", "Direct Communication"];
-
 function Home() {
+ 
+
+
   return (
     <View style={styles.container}>
-      {/* Header Icons */}
-      <View style={styles.header}>
-        <TouchableOpacity>
-          <FontAwesome name="bars" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <FontAwesome name="bell" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
+     
 
-      {/* Menu Boxes with Central Rounded Circle */}
+      {/* Main Content */}
       <View style={styles.menuContainer}>
         <View style={styles.menuWrapper}>
           {/* Central Rounded Circle */}
@@ -49,12 +35,14 @@ function Home() {
           </View>
 
           {/* Navigation Boxes */}
-          {navBox.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.navBox}
-            >
-              <FontAwesome name={item.icon} style={styles.icons} size={30} color="black" />
+          {NavBox.map((item, index) => (
+            <TouchableOpacity key={index} style={styles.navBox}>
+              <FontAwesome
+                name={item.icon}
+                style={styles.icons}
+                size={30}
+                color="black"
+              />
               <Text style={styles.navTitle}>{item.title}</Text>
             </TouchableOpacity>
           ))}
@@ -66,7 +54,6 @@ function Home() {
         {descriptions.map((item, index) => (
           <View key={index} style={styles.descriptionContainer}>
             <Text style={styles.descriptionText}>{item}</Text>
-            
             <View style={styles.descriptionLine} />
           </View>
         ))}
@@ -85,6 +72,30 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  sideMenu: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: 250,
+    height: "100%",
+    backgroundColor: "#fff",
+    elevation: 5,
+    zIndex: 2,
+    padding: 20,
+  },
+  menuHeader: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  sideMenuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 15,
+  },
+  sideMenuTitle: {
+    marginLeft: 10,
+    fontSize: 18,
   },
   menuContainer: {
     flex: 1,
@@ -119,7 +130,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     margin: 10,
     justifyContent: "center",
-    // alignItems: "center",
     borderRadius: 10,
     elevation: 5,
     shadowColor: "#000",
@@ -128,17 +138,15 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   navTitle: {
-    marginTop: 8, // Adjusted margin
+    marginTop: 8,
     fontSize: 16,
-    textAlign: "center", // Center text
+    textAlign: "center",
   },
   icons: {
-   
-    textAlign: "center", // Center text
+    textAlign: "center",
   },
   descriptionSection: {
     marginBottom: 20,
-    justifyContent: "flex-start",
   },
   descriptionContainer: {
     marginBottom: 20,
