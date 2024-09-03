@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { NavBox } from "@/components/data/navdata";
+import TouchButton from "@/components/touchButton";
 
 
 
@@ -36,7 +37,7 @@ function Home() {
 
           {/* Navigation Boxes */}
           {NavBox.map((item, index) => (
-            <TouchableOpacity key={index} style={styles.navBox}>
+            <TouchButton href={item.screen} key={index} style={styles.navBox}>
               <FontAwesome
                 name={item.icon}
                 style={styles.icons}
@@ -44,26 +45,26 @@ function Home() {
                 color="black"
               />
               <Text style={styles.navTitle}>{item.title}</Text>
-            </TouchableOpacity>
+            </TouchButton     >
           ))}
         </View>
       </View>
 
       {/* Description Sections */}
-      <View style={styles.descriptionSection}>
+      {/* <View style={styles.descriptionSection}>
         {descriptions.map((item, index) => (
           <View key={index} style={styles.descriptionContainer}>
             <Text style={styles.descriptionText}>{item}</Text>
             <View style={styles.descriptionLine} />
           </View>
         ))}
-      </View>
+      </View> */}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
+export const styles = StyleSheet.create({
+    container: {
     flex: 1,
     backgroundColor: "#6de3d8",
     padding: 20,

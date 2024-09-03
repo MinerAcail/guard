@@ -13,8 +13,8 @@ const useToggleMenu = () => {
       duration: 300,
       useNativeDriver: true,
     }).start();
-  };
-
+  };                
+  
   return { menuVisible, menuAnimation, toggleMenu };
 };
 

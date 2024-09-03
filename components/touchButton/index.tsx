@@ -1,19 +1,28 @@
-import { Link, LinkProps } from 'expo-router';
+import { LinkProps, useRouter } from 'expo-router';
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { ReactNode } from 'react';
 
 interface TouchButtonProps extends TouchableOpacityProps {
-  href: LinkProps<string | object >['href'];  // Provide the correct generic type
+  href: LinkProps<string | object>['href'];  // Correct type for href
   children: ReactNode;
 }
 
-function TouchButton({ children, href, ...props }: TouchButtonProps) {
+function TouchButton({ children, href, style, ...props }: TouchButtonProps) {
+  const router = useRouter();
+
+  // Create a function to handle navigation
+  const handlePress = () => {
+    if (typeof href === 'string') {
+      router.push(href);
+    } else {
+    //   router.push(href.routeName, href.params);
+    }
+  };
+
   return (
-    <Link href={href}>
-      <TouchableOpacity {...props}>
-        {children}
-      </TouchableOpacity>
-    </Link>
+    <TouchableOpacity onPress={handlePress} {...props} style={style}>
+      {children}
+    </TouchableOpacity>
   );
 }
 

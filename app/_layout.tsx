@@ -63,7 +63,7 @@ export default function RootLayout() {
               </TouchButton>
             ),
             headerRight: () => (
-              <TouchButton href="/calender/calender">
+              <TouchButton href="/map/map">
                 <FontAwesome name="bell" size={24} color="black" />
               </TouchButton>
             ),
@@ -71,6 +71,13 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen name="+not-found" />
+        <Stack.Screen  name="map/map" options={{
+          presentation:"modal",
+          title:"Map",
+          headerStyle:{
+            backgroundColor:"#f9f871"
+          }
+        }} />
       </Stack>
     </ThemeProvider>
   );

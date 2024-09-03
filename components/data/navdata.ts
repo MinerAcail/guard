@@ -1,22 +1,46 @@
 export const NavBox = [
     {
-      title: "Home",
-      icon: "home",
-      screen: "HomeScreen",
+      title: "Calendar",
+      icon: "calendar",
+      screen: "calendar/calendar",
     },
     {
       title: "Parent",
       icon: "comments",
-      screen: "MessagesScreen",
+      screen: "calendar/calendar",
     },
     {
-      title: "Profile",
-      icon: "user",
-      screen: "ProfileScreen",
+      title: "Maps",
+      icon: "map",
+      screen: "map/map",
     },
     {
       title: "Settings",
       icon: "cog",
-      screen: "SettingsScreen",
+      screen: "calendar/calendar",
     },
+    {
+        title: "Settings",
+        icon: "cog",
+
+        screen: "calendar/calendar",
+      },
+      {
+        title: "Settings",
+        icon: "cog",
+
+        screen: "calendar/calendar",
+      },
+      {
+        title: "Settings",
+        icon: "cog",
+
+        screen: "calendar/calendar",
+      },
+      {
+        title: "Settings",
+        icon: "cog",
+
+        screen: "calendar/calendar",
+      },
   ];

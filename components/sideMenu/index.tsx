@@ -1,10 +1,11 @@
-// SideMenu.tsx
+
 import React, { useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, FlatList, Pressable, BackHandler } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, FlatList,  BackHandler } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NavBox } from '../data/navdata'; // Adjust import as needed
+import { PanGestureHandler, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Define props for SideMenu
 interface SideMenuProps {
@@ -38,29 +39,37 @@ const SideMenu: React.FC<SideMenuProps> = ({ menuVisible, toggleMenu }) => {
     toggleMenu();
   };
 
+  const handleGestureEvent = () => {
+    toggleMenu();
+  };
+
   return (
-    <Pressable style={styles.overlay} onPress={toggleMenu}>
+    <GestureHandlerRootView style={styles.overlay}>
+      <PanGestureHandler onEnded={handleGestureEvent}>
+       
       <Animated.View style={styles.sideMenu}>
-        <View style={styles.menuHeader}>
-          <TouchableOpacity onPress={toggleMenu}>
-            <FontAwesome name="close" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-        <FlatList
-          data={NavBox}
-          keyExtractor={(item) => item.title}
-          renderItem={({ item }) => (
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={() => handleNavigation(item.screen)}
-            >
-              <FontAwesome name={item.icon as any} size={24} color="black" />
-              <Text style={styles.menuItemText}>{item.title}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </Animated.View>
-    </Pressable>
+            <View style={styles.menuHeader}>
+              <TouchableOpacity  onPress={toggleMenu}>
+                <FontAwesome name="close" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={NavBox}
+              keyExtractor={(item) => item.title}
+              renderItem={({ item }) => (
+                <TouchableOpacity 
+                  style={styles.menuItem} 
+                  onPress={() => handleNavigation(item.screen)}
+                >
+                  <FontAwesome name={item.icon as any} size={24} color="black" />
+                  <Text style={styles.menuItemText}>{item.title}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </Animated.View>
+       
+      </PanGestureHandler>
+    </GestureHandlerRootView>
   );
 };
 

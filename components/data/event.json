@@ -1,0 +1,149 @@
+{
+    "2024-11-23": [],
+    "2024-10-04": [
+        {
+            "id": "1",
+            "name": "Live: notJust.Hack Kickstart",
+            "height": 50,
+            "day": "2024-11-24"
+        }
+    ],
+    "2024-11-25": [
+        {
+            "id": "2",
+            "name": "Workshop: Build any mobile application with React Native",
+            "height": 50,
+            "day": "2024-11-25"
+        },
+        {
+            "id": "3",
+            "name": "Q&A session",
+            "height": 50,
+            "day": "2024-11-25"
+        }
+    ],
+    "2024-11-26": [
+        {
+            "id": "4",
+            "name": "Workshop: Build a Chat application in hours using Stream",
+            "height": 50,
+            "day": "2024-11-26"
+        },
+        {
+            "id": "5",
+            "name": "Q&A session",
+            "height": 50,
+            "day": "2024-11-26"
+        }
+    ],
+    "2024-11-27": [
+        {
+            "id": "6",
+            "name": "Workshop: Build Full-Stack applications with Nhost",
+            "height": 50,
+            "day": "2024-11-27"
+        },
+        {
+            "id": "7",
+            "name": "Q&A session",
+            "height": 50,
+            "day": "2024-11-27"
+        }
+    ],
+    "2024-11-28": [
+        {
+            "id": "8",
+            "name": "Demo Day",
+            "height": 50,
+            "day": "2024-11-28"
+        }
+    ],
+    "2024-11-29": [
+        {
+            "id": "9",
+            "name": "Feedback and Retrospective",
+            "height": 50,
+            "day": "2024-11-29"
+        },
+        {
+            "id": "10",
+            "name": "Closing Ceremony",
+            "height": 50,
+            "day": "2024-11-29"
+        }
+    ],
+    "2024-11-30": [
+        {
+            "id": "11",
+            "name": "Meet & Greet with Mentors",
+            "height": 50,
+            "day": "2024-11-30"
+        },
+        {
+            "id": "12",
+            "name": "Networking Event",
+            "height": 50,
+            "day": "2024-11-30"
+        }
+    ],
+    "2024-12-01": [
+        {
+            "id": "13",
+            "name": "Post-Event Survey",
+            "height": 50,
+            "day": "2024-12-01"
+        }
+    ],
+    "2024-12-02": [
+        {
+            "id": "14",
+            "name": "Follow-Up Workshop: Advanced React Native",
+            "height": 50,
+            "day": "2024-12-02"
+        }
+    ],
+    "2024-09-03": [
+        {
+            "id": "15",
+            "name": "Follow-Up Workshop: Advanced Full-Stack Development",
+            "height": 50,
+            "day": "2024-09-03"
+        }
+    ],
+    "2024-09-04": [
+        {
+            "id": "16",
+            "name": "Alumni Meetup",
+            "height": 50,
+            "day": "2024-09-04"
+        }
+    ],
+    "2024-09-05": [
+        {
+            "id": "17",
+            "name": "Mentorship Session: Career Development",
+            "height": 50,
+            "day": "2024-09-05"
+        },
+        {
+            "id": "18",
+            "name": "Mentorship Session: Technical Skills",
+            "height": 50,
+            "day": "2024-09-05"
+        }
+    ],
+    "2024-09-06": [
+        {
+            "id": "19",
+            "name": "Project Showcase: Alumni Projects",
+            "height": 50,
+            "day": "2024-09-06"
+        },
+        {
+            "id": "20",
+            "name": "Hackathon Kickoff: Winter Edition",
+            "height": 50,
+            "day": "2024-09-06"
+        }
+    ]
+}
