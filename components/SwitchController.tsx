@@ -16,7 +16,7 @@ const SwitchController: React.FC<SwitchControllerProps> = ({
   label,
   description,
   disabled = false,
-}) => {
+}) => { 
   return (
     <Controller
       control={control}

@@ -31,6 +31,18 @@ export const NavBox = [
 
     screen: "SwitchForm/transport",
   },
+  {
+    title: "Sign UP",
+    icon: "bus-alt",
+
+    screen: "SwitchForm/transport",
+  },
+  {
+    title: "Transport",
+    icon: "bus-alt",
+
+    screen: "SwitchForm/transport",
+  },
 ];
 
 export const screens = [
@@ -41,6 +53,8 @@ export const screens = [
   { name: "SwitchForm/teacher", title: "Teachers" },
   { name: "SwitchForm/transport", title: "Transports" },
   { name: "SwitchForm/notification", title: "Notification" },
+  { name: "auth/signup", title: "Sign Up" },
+  { name: "auth/signin", title: "Sign In" },
 
 
 ];

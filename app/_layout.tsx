@@ -62,7 +62,7 @@ export default function RootLayout() {
               </TouchButton>
             ),
             headerRight: () => (
-              <TouchButton href="/SwitchForm/notification">
+              <TouchButton href="/auth/signup">
                 <FontAwesome name="bell" size={24} color="black" />
               </TouchButton>
             ),
