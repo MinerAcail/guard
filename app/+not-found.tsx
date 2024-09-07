@@ -1,44 +1,32 @@
-import { useState } from 'react';
-import { Animated } from 'react-native';
+import { Link, Stack } from 'expo-router';
+import { StyleSheet } from 'react-native';
 
-const useToggleMenu = () => {
-  const [menuVisible, setMenuVisible] = useState(false);
-  const menuAnimation = useState(new Animated.Value(-250))[0]; // Start off-screen
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 
-  const toggleMenu = () => {
-    Animated.timing(menuAnimation, {
-      toValue: menuVisible ? -250 : 0, // Slide in or out
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => {
-      setMenuVisible(!menuVisible);
-    });
-  };
-<Animated.View
-        style={[
-          styles.sideMenu,
-          { transform: [{ translateX: menuAnimation }] },
-        ]}
-      >
-        <View style={styles.menuHeader}>
-          <TouchableOpacity onPress={toggleMenu}>
-            <FontAwesome name="close" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-        {navBox.map((item, index) => (
-          <TouchableOpacity key={index} style={styles.sideMenuItem}>
-            <FontAwesome name={item.icon} size={24} color="black" />
-            <Text style={styles.sideMenuTitle}>{item.title}</Text>
-          </TouchableOpacity>
-        ))}
-      </Animated.View>
-  return {
-    
-      toggleMenu,
-      navBox
-      
-  };
- 
-};
+export default function NotFoundScreen() {
+  return (
+    <>
+      <Stack.Screen options={{ title: 'Oops!' }} />
+      <ThemedView style={styles.container}>
+        <ThemedText type="title">This screen doesn't exist.</ThemedText>
+        <Link href="/" style={styles.link}>
+          <ThemedText type="link">Go to home screen!</ThemedText>
+        </Link>
+      </ThemedView>
+    </>
+  );
+}
 
-export default useToggleMenu;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  link: {
+    marginTop: 15,
+    paddingVertical: 15,
+  },
+});

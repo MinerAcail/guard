@@ -7,22 +7,20 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import TouchButton from "@/components/touchButton";
 import { FontAwesome } from "@expo/vector-icons";
 import useToggleMenu from "@/hooks/useToggleMenu";
-import Animated from "react-native-reanimated";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import SideMenu from "@/components/sideMenu";
-
+import { screens } from "@/components/data/navdata";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const { toggleMenu, menuAnimation,menuVisible } = useToggleMenu();
+  const { toggleMenu, menuAnimation, menuVisible } = useToggleMenu();
 
   const [fontsLoaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -35,35 +33,36 @@ export default function RootLayout() {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    // Optionally, return a loading indicator or nothing while fonts are loading
-    return null;
+    return null; // Optionally, return a loading indicator or splash screen.
   }
+
+  const commonHeaderOptions = (title: string) => ({
+    title: "",
+    headerStyle: commonStyles.headerStyle,
+    headerTitleAlign: "left" as const,
+    headerRight: () => (
+      <Text style={commonStyles.headerRightText}>{title}</Text>
+    ),
+  });
+
+
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-     
-      <SideMenu menuVisible={menuVisible} toggleMenu={toggleMenu}/>
+      <SideMenu menuVisible={menuVisible} toggleMenu={toggleMenu} />
       <Stack>
         <Stack.Screen
           name="index"
           options={{
-            headerTitleStyle: {
-              fontFamily: "SpaceMono",
-            },
+            headerTitleStyle: { fontFamily: "SpaceMono" },
             headerTitleAlign: "center",
             headerLeft: () => (
-              <TouchButton
-                href={"/"}
-                onPress={() => {
-                  console.log("Toggle Menu button pressed");
-                  toggleMenu();
-                }}
-              >
+              <TouchButton href={"/"} onPress={toggleMenu}>
                 <FontAwesome name="bars" size={24} color="black" />
               </TouchButton>
             ),
             headerRight: () => (
-              <TouchButton href="/map/map">
+              <TouchButton href="/SwitchForm/notification">
                 <FontAwesome name="bell" size={24} color="black" />
               </TouchButton>
             ),
@@ -71,15 +70,31 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen name="+not-found" />
-        <Stack.Screen  name="map/map" options={{
-          presentation:"modal",
-          title:"Map",
-          headerStyle:{
-            backgroundColor:"#f9f871"
-          }
-        }} />
+        
+        {/* Dynamically render the Stack screens */}
+        {screens.map((screen) => (
+          <Stack.Screen
+            key={screen.name}
+            name={screen.name}
+            options={commonHeaderOptions(screen.title)}
+          />
+        ))}
+        
       </Stack>
     </ThemeProvider>
   );
 }
 
+
+const commonStyles = StyleSheet.create({
+  headerStyle: {
+    backgroundColor: "#d9eef0",
+  },
+  headerRightText: {
+    fontFamily: "SpaceMono",
+    fontSize: 18,
+    color: "black",
+    fontWeight: "bold",
+    paddingRight: 15,
+  },
+});

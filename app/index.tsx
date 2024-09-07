@@ -6,7 +6,7 @@ import {
   StyleSheet,
 
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { NavBox } from "@/components/data/navdata";
 import TouchButton from "@/components/touchButton";
 
@@ -38,12 +38,12 @@ function Home() {
           {/* Navigation Boxes */}
           {NavBox.map((item, index) => (
             <TouchButton href={item.screen} key={index} style={styles.navBox}>
-              <FontAwesome
-                name={item.icon}
-                style={styles.icons}
+            
+
+                <FontAwesome5 
                 size={30}
-                color="black"
-              />
+                  name={item.icon}
+                style={styles.icons} color="black" />
               <Text style={styles.navTitle}>{item.title}</Text>
             </TouchButton     >
           ))}
