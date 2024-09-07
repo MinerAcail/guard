@@ -29,12 +29,12 @@ export const NavBox = [
     title: "Transport",
     icon: "bus-alt",
 
-    screen: "/SwitchForm/transport",
+    screen: "SwitchForm/transport",
   },
 ];
 
 export const screens = [
-  { name: "map/map", title: "Students Location" },
+  { name: "map/map", title: "Students Location" },  
   { name: "calendar/calendar", title: "Event Calendar" },
   { name: "communication/chart", title: "Announcement" },
   { name: "communication/viewChart", title: "Chart" },

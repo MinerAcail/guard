@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, FlatList,  BackHandler } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NavBox } from '../data/navdata'; // Adjust import as needed
 import { PanGestureHandler, GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -61,7 +61,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ menuVisible, toggleMenu }) => {
                   style={styles.menuItem} 
                   onPress={() => handleNavigation(item.screen)}
                 >
-                  <FontAwesome name={item.icon as any} size={24} color="black" />
+                  <FontAwesome5 name={item.icon as any} size={24} color="black" />
                   <Text style={styles.menuItemText}>{item.title}</Text>
                 </TouchableOpacity>
               )}
