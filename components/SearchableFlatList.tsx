@@ -1,15 +1,19 @@
-// SearchableFlatList.tsx
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { View, TextInput, FlatList, StyleSheet, Text } from "react-native";
 
-interface SearchableFlatListProps<ItemType> {
+interface SearchableItem {
+  firstName: string;
+  lastName: string;
+}
+
+interface SearchableFlatListProps<ItemType extends SearchableItem> {
   data: ItemType[];
   renderItem: ({ item }: { item: ItemType }) => React.ReactElement;
   keyExtractor: (item: ItemType) => string;
   placeholder: string;
 }
 
-export function SearchableFlatList<ItemType>({
+export function SearchableFlatList<ItemType extends SearchableItem>({
   data,
   renderItem,
   keyExtractor,
@@ -17,13 +21,16 @@ export function SearchableFlatList<ItemType>({
 }: SearchableFlatListProps<ItemType>) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter data based on search query
-  const filteredData = data.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Memoize the filtered data to avoid recalculating on every render
+  const filteredData = useMemo(() => {
+    return data.filter((item) => {
+      const fullName = `${item.firstName} ${item.lastName}`.toLowerCase();
+      return fullName.includes(searchQuery.toLowerCase());
+    });
+  }, [data, searchQuery]);
 
   return (
-    <View >
+    <View>
       <TextInput
         style={styles.searchInput}
         placeholder={placeholder}

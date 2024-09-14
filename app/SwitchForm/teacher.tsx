@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import SwitchController from "@/components/SwitchController";
-import { Mapdata } from "@/components/data/mapData";
-import { SearchableFlatList } from "@/components/SearchableFlatList"; // Adjust the import path
+import { SearchableFlatList } from "@/components/SearchableFlatList";
+import { useFetchData } from "@/Fetch/useFetchStudents";
 
 // Define your form schema using Zod
 const FormSchema = z.object({
@@ -14,6 +14,8 @@ const FormSchema = z.object({
 });
 
 export default function Teacher() {
+  const { data, error, loading } = useFetchData("students/all");
+
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -31,12 +33,11 @@ export default function Teacher() {
 
   const renderItem = ({ item }: any) => (
     <View style={styles.studentContainer}>
-      <Text style={styles.header}>{item.name}</Text>
+      <Text style={styles.header}>{`${item.firstName} ${item.lastName}`}</Text>
       <SwitchController
         control={control}
         name={`student_${item.id}`} // Dynamically generate a unique name for each switch
-        label={`student ID: ${item.id}`}
-        description={`Location: (${item.latitude}, ${item.longitude})`}
+        label={`student ID: ${item.id.substring(0, 6)}`}
         disabled={false}
       />
     </View>
@@ -45,7 +46,7 @@ export default function Teacher() {
   return (
     <View style={styles.container}>
       <SearchableFlatList
-        data={Mapdata.students}
+        data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         placeholder="Search by student name"

@@ -9,53 +9,182 @@ import {
   Switch,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Picker } from "@react-native-picker/picker"; // Picker
-
+import { Picker } from "@react-native-picker/picker";
+import { Student, Staff } from "./types"; // Adjust the import path as needed
+import { useApiPostRequest } from "@/Request/useApiPostRequest";
+import { AntDesign } from "@expo/vector-icons";
+import Loader from "@/components/Animation/rotateLoader";
+import moment from "moment";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+// import DateTimePicker from '@react-native-community/datetimepicker';
+// Define your options outside of the component to avoid recreating them on every render
 const grades = [
-  { label: 'Select grade', value: '' },
-  { label: '1st', value: '1' },
-  { label: '2nd', value: '2' },
-  { label: '3rd', value: '3' },
-  { label: '4th', value: '4' },
-  { label: '5th', value: '5' },
-  { label: '6th', value: '6' },
-  { label: '7th', value: '7' },
-  { label: '8th', value: '8' },
-  { label: '9th', value: '9' },
-  { label: '10th', value: '10' },
-  { label: '11th', value: '11' },
-  { label: '12th', value: '12' }
+  { label: "Select grade", value: "" },
+  { label: "1st", value: "1" },
+  { label: "2nd", value: "2" },
+  { label: "3rd", value: "3" },
+  { label: "4th", value: "4" },
+  { label: "5th", value: "5" },
+  { label: "6th", value: "6" },
+  { label: "7th", value: "7" },
+  { label: "8th", value: "8" },
+  { label: "9th", value: "9" },
+  { label: "10th", value: "10" },
+  { label: "11th", value: "11" },
+  { label: "12th", value: "12" },
 ];
 
 const positions = [
-  { label: 'Select position', value: '' },
-  { label: 'Teacher', value: 'teacher' },
-  { label: 'Admin', value: 'admin' },
-  { label: 'Maintenance', value: 'maintenance' },
+  { label: "Select position", value: "" },
+  { label: "Teacher", value: "teacher" },
+  { label: "Admin", value: "admin" },
+  { label: "Maintenance", value: "maintenance" },
 ];
 
+interface InputFieldProps {
+  label: string;
+  placeholder: string;
+  value?: string;
+  onChangeText?: (text: string) => void;
+  keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
+  secureTextEntry?: boolean;
+}
+
+const InputField: React.FC<InputFieldProps> = ({
+  label,
+  placeholder,
+  value,
+  onChangeText,
+  keyboardType,
+  secureTextEntry,
+}) => (
+  <View style={styles.inputGroup}>
+    <Text style={styles.label}>{label}</Text>
+    <TextInput
+      style={styles.input}
+      placeholder={placeholder}
+      value={value}
+      onChangeText={onChangeText}
+      keyboardType={keyboardType}
+      secureTextEntry={secureTextEntry}
+    />
+  </View>
+);
+
+interface PickerFieldProps {
+  label: string;
+  selectedValue: string;
+  onValueChange: (value: string) => void;
+  items: { label: string; value: string }[];
+}
+
+const PickerField: React.FC<PickerFieldProps> = ({
+  label,
+  selectedValue,
+  onValueChange,
+  items,
+}) => (
+  <View style={styles.inputGroup}>
+    <Text style={styles.label}>{label}</Text>
+    <Picker
+      selectedValue={selectedValue}
+      onValueChange={onValueChange}
+      style={styles.picker}
+    >
+      {items.map((item) => (
+        <Picker.Item key={item.value} label={item.label} value={item.value} />
+      ))}
+    </Picker>
+  </View>
+);
+
 export default function Signup() {
-  const [grade, setGrade] = useState("");
-  const [stuff, setStuff] = useState("");
-  const [parentContact, setParentContact] = useState("");
-  const [position, setPosition] = useState("");
-  const [superviseGrade, setSuperviseGrade] = useState("");
-  const [isGradeSelected, setIsGradeSelected] = useState(true); // Toggle state for switch
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [position, setPosition] = useState<string>("");
+  const [superviseGrade, setSuperviseGrade] = useState<string>("");
+  const [isGradeSelected, setIsGradeSelected] = useState<boolean>(true);
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [dateOfBirth, setDateOfBirth] = useState("");
+
+  const handleDateConfirm = (date: Date) => {
+    setDateOfBirth(moment(date).format("MM/DD/YYYY")); // Format the date as needed
+    handleInputChange("dateOfBirth", moment(date).format("MM/DD/YYYY"));
+    setDatePickerVisibility(false);
+  };
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    address: "",
+    gender: "",
+    grade: "",
+    parentContact: "",
+  });
+
+  const { data, loading, error, postRequest } = useApiPostRequest({
+    url: "students",
+  });
 
   const navigation = useRouter();
 
-  const toggleSwitch = () => setIsGradeSelected(previousState => !previousState);
-// Simple validation example
-const handleRegister = () => {
-  if (password !== confirmPassword) {
-    alert("Passwords do not match!");
-    return;
-  }
-  // Proceed with registration logic
-  console.log("Registered successfully");
-};
+  const toggleSwitch = () => setIsGradeSelected((prev) => !prev);
+
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
+  const handleRegister = async () => {
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      dateOfBirth,
+      address,
+      gender,
+      grade,
+      parentContact,
+    } = formData;
+
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !phoneNumber ||
+      !dateOfBirth ||
+      !address ||
+      !grade ||
+      !parentContact
+    ) {
+      alert("Please fill out all required fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    const studentData: Student = {
+      ...formData,
+      gender: gender as "male" | "female" | undefined,
+    };
+
+    try {
+      await postRequest(studentData);
+      console.log("Registered successfully:", data);
+      alert("Registration successful!");
+      navigation.push("/");
+    } catch (error) {
+      alert("There was an error submitting the form.");
+    }
+  };
 
   return (
     <ScrollView
@@ -72,59 +201,68 @@ const handleRegister = () => {
         <View style={styles.form}>
           {/* Common Fields */}
           <View style={styles.inputRow}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>First Name</Text>
-              <TextInput style={styles.input} placeholder="John" />
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Last Name</Text>
-              <TextInput style={styles.input} placeholder="Doe" />
-            </View>
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="m@example.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
+            <InputField
+              label="First Name"
+              placeholder="John"
+              value={formData.firstName}
+              onChangeText={(text) => handleInputChange("firstName", text)}
+            />
+            <InputField
+              label="Last Name"
+              placeholder="Doe"
+              value={formData.lastName}
+              onChangeText={(text) => handleInputChange("lastName", text)}
             />
           </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Phone Number</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="(123) 456-7890"
-              keyboardType="phone-pad"
-            />
-          </View>
+          <InputField
+            value={formData.email}
+            onChangeText={(text) => handleInputChange("email", text)}
+            label="Email"
+            placeholder="m@example.com"
+            keyboardType="email-address"
+          />
+          <InputField
+            label="Phone Number"
+            placeholder="(123) 456-7890"
+            keyboardType="phone-pad"
+            value={formData.phoneNumber}
+            onChangeText={(text) => handleInputChange("phoneNumber", text)}
+          />
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Date of Birth</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="MM/DD/YYYY"
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Address</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="123 Main St, Anytown USA"
-            />
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Gender</Text>
-            <Picker
-              style={styles.picker}
-              selectedValue=""
-              onValueChange={(itemValue) => console.log(itemValue)}
+            <TouchableOpacity
+              onPress={() => setDatePickerVisibility(true)}
+              style={styles.inputRow}
             >
-              <Picker.Item label="Male" value="male" />
-              <Picker.Item label="Female" value="female" />
-            
-            </Picker>
+              <Text style={styles.input}>
+                Date of Birth: {dateOfBirth || "MM/DD/YYYY"}
+              </Text>
+            </TouchableOpacity>
           </View>
+
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleDateConfirm}
+            onCancel={() => setDatePickerVisibility(false)}
+          />
+
+          <InputField
+            label="Address"
+            placeholder="123 Main St, Anytown USA"
+            value={formData.address}
+            onChangeText={(text) => handleInputChange("address", text)}
+          />
+
+          <PickerField
+            label="Gender"
+            selectedValue={formData.gender}
+            onValueChange={(value) => handleInputChange("gender", value)}
+            items={[
+              { label: "Male", value: "male" },
+              { label: "Female", value: "female" },
+            ]}
+          />
 
           {/* Switch between Student and Staff */}
           <View style={styles.switchContainer}>
@@ -140,99 +278,67 @@ const handleRegister = () => {
           {/* Conditionally render Student-specific Fields */}
           {isGradeSelected ? (
             <>
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Grade</Text>
-                <Picker
-                  selectedValue={grade}
-                  onValueChange={(itemValue) => setGrade(itemValue)}
-                  style={styles.picker}
-                >
-                  {grades.map((gradeOption) => (
-                    <Picker.Item
-                      key={gradeOption.value}
-                      label={gradeOption.label}
-                      value={gradeOption.value}
-                    />
-                  ))}
-                </Picker>
-              </View>
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Parent/Guardian Contact</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Parent/Guardian contact info"
-                  value={parentContact}
-                  onChangeText={setParentContact}
-                />
-              </View>
+              <PickerField
+                label="Grade"
+                selectedValue={formData.grade}
+                onValueChange={(value) => handleInputChange("grade", value)}
+                items={grades}
+              />
+              <InputField
+                label="Parent/Guardian Contact"
+                placeholder="Parent/Guardian contact info"
+                value={formData.parentContact}
+                onChangeText={(text) =>
+                  handleInputChange("parentContact", text)
+                }
+              />
             </>
           ) : (
             <>
-              {/* Conditionally render Staff-specific Fields */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Password</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your password"
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                />
-                <TextInput
-                  style={[styles.input, styles.inputConfirm]}
-                  placeholder="Confirm password"
-                  secureTextEntry
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                />
-              </View>
-
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Position/Role</Text>
-                <Picker
-                  selectedValue={position}
-                  onValueChange={(itemValue) => setPosition(itemValue)}
-                  style={styles.picker}
-                >
-                  {positions.map((positionOption) => (
-                    <Picker.Item
-                      key={positionOption.value}
-                      label={positionOption.label}
-                      value={positionOption.value}
-                    />
-                  ))}
-                </Picker>
-              </View>
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Supervise Which Grade</Text>
-                <Picker
-                  selectedValue={superviseGrade}
-                  onValueChange={(itemValue) => setSuperviseGrade(itemValue)}
-                  style={styles.picker}
-                >
-                  {grades.map((gradeOption) => (
-                    <Picker.Item
-                      key={gradeOption.value}
-                      label={gradeOption.label}
-                      value={gradeOption.value}
-                    />
-                  ))}
-                </Picker>
-              </View>
+              <InputField
+                label="Password"
+                placeholder="Enter your password"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+              <InputField
+                label="Confirm Password"
+                placeholder="Confirm password"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              <PickerField
+                label="Position/Role"
+                selectedValue={position}
+                onValueChange={setPosition}
+                items={positions}
+              />
+              <PickerField
+                label="Supervise Which Grade"
+                selectedValue={superviseGrade}
+                onValueChange={setSuperviseGrade}
+                items={grades}
+              />
             </>
           )}
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => console.log("Register pressed")}
-          >
-            <Text style={styles.buttonText}>Register</Text>
+          <TouchableOpacity style={styles.button} onPress={handleRegister}>
+            {loading ? (
+              <Loader />
+            ) : (
+              <Text style={styles.buttonText}>Register</Text>
+            )}
           </TouchableOpacity>
         </View>
         <View style={styles.footer}>
           <Text style={styles.footerText}>
             Already have an account?{" "}
-            <Text style={styles.link} onPress={() => navigation.push("/auth/signin")}>
+            <Text
+              style={styles.link}
+              onPress={() => navigation.push("/auth/signin")}
+            >
               Login
             </Text>
           </Text>
@@ -322,6 +428,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  rotatingIcon: {
+    transform: [{ rotate: "360deg" }],
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    width: 24, // Adjust the width and height as needed
+    height: 24,
   },
   footer: {
     alignItems: "center",

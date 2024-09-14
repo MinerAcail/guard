@@ -6,13 +6,13 @@ interface SwitchControllerProps {
   control?: any
   name: string
   label: string
-  description: string
+  description?: string
   disabled?: boolean
 }
 
 const SwitchController: React.FC<SwitchControllerProps> = ({
   control,
-  name,
+  name,   
   label,
   description,
   disabled = false,
@@ -26,7 +26,7 @@ const SwitchController: React.FC<SwitchControllerProps> = ({
           <View>
             <Text style={styles.label}>Class 6</Text>
             <Text style={styles.label}>{label}</Text>
-            <Text style={styles.description}>{description}</Text>
+            {/* <Text style={styles.description}>{description}</Text> */}
           </View>
           <Switch
             value={value}

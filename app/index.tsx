@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
 
 } from "react-native";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { NavBox } from "@/components/data/navdata";
 import TouchButton from "@/components/touchButton";
+import { useApi } from "@/context/ApiContext";
+import { useFetchData } from "@/Fetch/useFetchStudents";
 
 
 
@@ -21,7 +24,20 @@ const descriptions = [
 
 function Home() {
  
+ const {data,error,loading} = useFetchData("students/all")
 
+  // if (loading) {
+  //   return <ActivityIndicator size="large" color="#0000ff" />;
+  // }
+
+  // if (error) {
+  //   return <Text>Error loading students!</Text>;
+  // }
+
+  console.log("error",error);
+  console.log("loading",loading);
+  console.log("students",data);
+  
 
   return (
     <View style={styles.container}>

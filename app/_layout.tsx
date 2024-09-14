@@ -14,6 +14,7 @@ import useToggleMenu from "@/hooks/useToggleMenu";
 import { StyleSheet, Text } from "react-native";
 import SideMenu from "@/components/sideMenu";
 import { screens } from "@/components/data/navdata";
+import { ApiProvider } from "@/context/ApiContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -42,13 +43,15 @@ export default function RootLayout() {
     headerTitleAlign: "left" as const,
     headerRight: () => (
       <Text style={commonStyles.headerRightText}>{title}</Text>
-    ),
+    ),      
   });
 
 
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <ApiProvider> 
+        
       <SideMenu menuVisible={menuVisible} toggleMenu={toggleMenu} />
       <Stack>
         <Stack.Screen
@@ -81,6 +84,7 @@ export default function RootLayout() {
         ))}
         
       </Stack>
+      </ApiProvider>
     </ThemeProvider>
   );
 }
