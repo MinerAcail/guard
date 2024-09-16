@@ -21,8 +21,8 @@ export interface Student {
     address: string;
     gender?: 'male' | 'female'; // Optional
     password: string;
-    confirmPassword: string;
-    position: 'teacher' | 'admin' | 'maintenance';
+    confirmPassword?: string;
+    position: "teacher" | "admin" | "maintenance";
     superviseGrade: string;
   }
   
