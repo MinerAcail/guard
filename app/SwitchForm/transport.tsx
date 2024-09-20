@@ -55,7 +55,7 @@ export default function Transport() {
         keyExtractor={(item) => item.id}
         placeholder="Search by student name"
       />
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+     
     </View>
   );
 }

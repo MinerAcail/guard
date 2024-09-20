@@ -1,7 +1,7 @@
 // context/ApiContext.tsx
 import React, { createContext, useContext } from 'react';
-const apiUrlString = 'http://192.168.223.110:8080'; // Base URL of the API
-
+const apiUrlString = 'http://192.168.26.110:8080'; // Base URL of the API
+//192.168.26.110:8081
 // Create a context with a default value
 const ApiContext = createContext(apiUrlString); // Replace with your local IP and port
 

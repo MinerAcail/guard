@@ -31,6 +31,8 @@ export const styles = StyleSheet.create({
     },
     subtitle: {
       color: "#6B7280",
+      fontSize: 19,
+      //fontWeight: "bold",
     },
     form: {
       marginBottom: 24,

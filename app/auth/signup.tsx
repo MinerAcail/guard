@@ -218,10 +218,11 @@ import { styles } from "./style";
       >
         <View style={styles.formContainer}>
           <View style={styles.header}>
-            <Text style={styles.title}>School Registration</Text>
-            <Text style={styles.subtitle}>
-              Enter your information to register for school.
-            </Text>
+           
+          <Text style={styles.subtitle}>
+  Please enter the required information before submitting.
+</Text>
+
           </View>
           <View style={styles.form}>
             {/* Common Fields */}

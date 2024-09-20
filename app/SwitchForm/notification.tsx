@@ -42,7 +42,7 @@ export const notificationsData: Notification[] = [
 export default function Notification() {
   // Function to handle button press, if needed
   const onPressHandler = () => {
-    // Handle button press action here
+    // Handle button press action herenotification
     console.log("Button Pressed");
   };
 

@@ -1,3 +1,5 @@
+import { StudentTableType } from "@/app/table/table";
+
 export const Mapdata = {
     buses: [
       { id: 'Bus 1', latitude: 5.6072, longitude: -0.1928, route: 'Route A' },
@@ -45,3 +47,29 @@ export const Mapdata = {
       // { id: '7676531', name: 'Aiden Robinson', latitude: 5.6031, longitude: -0.1792 },
     ],
   };
+
+
+
+ export const studentsData: StudentTableType[] = [
+    { id: "1", name: "John Doe", status: "Arrived" },
+    { id: "2", name: "Jane Smith", status: "Not Arrived" },
+    { id: "3", name: "Bob Johnson", status: "Arrived" },
+    { id: "4", name: "Alice Williams", status: "Not Arrived" },
+    { id: "5", name: "Charlie Brown", status: "Arrived" },
+    { id: "6", name: "Diana Prince", status: "Not Arrived" },
+    { id: "7", name: "Eve Adams", status: "Arrived" },
+    { id: "8", name: "Frank Martin", status: "Arrived" },
+    { id: "9", name: "Grace Lee", status: "Not Arrived" },
+    { id: "10", name: "Henry Ford", status: "Arrived" },
+    { id: "11", name: "Ivy Zhang", status: "Arrived" },
+    { id: "12", name: "Jack Black", status: "Not Arrived" },
+    { id: "13", name: "Karen White", status: "Arrived" },
+    { id: "14", name: "Liam King", status: "Not Arrived" },
+    { id: "15", name: "Mia Turner", status: "Arrived" },
+    { id: "16", name: "Nathan Scott", status: "Arrived" },
+    { id: "17", name: "Olivia Parker", status: "Not Arrived" },
+    { id: "18", name: "Paul Walker", status: "Arrived" },
+    { id: "19", name: "Quinn Allen", status: "Not Arrived" },
+    { id: "20", name: "Rachel Green", status: "Arrived" }
+  ];
+  

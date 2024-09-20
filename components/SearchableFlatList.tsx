@@ -41,6 +41,7 @@ export function SearchableFlatList<ItemType extends SearchableItem>({
         data={filteredData}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
+        contentContainerStyle={styles.listContent}
       />
     </View>
   );
@@ -54,5 +55,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 20,
+  },
+  listContent: {
+    paddingBottom: 200, // Adjust this value as needed
   },
 });

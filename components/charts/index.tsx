@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Text, Image, View, Pressable, ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
-// import { useNavigation } from "@react-navigation/core";
+import React, { useState } from "react";
+import { Text, Image, View, TouchableOpacity, StyleSheet } from "react-native";
 import moment from "moment";
 import { useRouter } from "expo-router";
-// import { style } from "./style";
-
-
 
 interface Message {
   id: string;
@@ -26,103 +22,91 @@ interface ChatRoomItemProps {
 }
 
 export function ChatRoomItem({ chatRoom }: ChatRoomItemProps) {
-  const [user, setUser] = useState(null);
-  const [lastMessage, setLastMessage] = useState<Message | undefined>(chatRoom.lastMessage);
-
-  const [isLoading, setIsLoading] = useState(false);
+  const [lastMessage] = useState<Message | undefined>(chatRoom.lastMessage);
   const router = useRouter();
 
-  // const navigation = useNavigation();
-
   const onPress = () => {
-    console.log("Pressed Chat Room:", chatRoom.name);
     router.push("/communication/viewChart");
-
   };
 
   const time = moment(lastMessage?.createdAt).fromNow();
 
-  // if (isLoading) {
-  //   return <ActivityIndicator />;
-  // }   
-
   return (
-    <TouchableOpacity onPress={onPress} style={style.container}>
-        
-      <Image
-        source={{ uri: chatRoom.imageUri || user?.imageUri }}
-        style={style.image}
-      />
-      <View style={style.badgeContainer}>
-        <Text style={style.badgeText}>{chatRoom.newMessages}</Text>
-      </View>
-      <View style={style.rightContainer}>
-        <View style={style.row}>
-          <Text style={style.name}>{chatRoom.name || user?.name}</Text>
-          <Text style={style.text}>{time}</Text>
+    <TouchableOpacity onPress={onPress} style={styles.container}>
+      <Image source={{ uri: chatRoom.imageUri }} style={styles.image} />
+      
+      {/* Badge for New Messages */}
+      {chatRoom.newMessages > 0 && (
+        <View style={styles.badgeContainer}>
+          <Text style={styles.badgeText}>{chatRoom.newMessages}</Text>
         </View>
-        <Text numberOfLines={1} style={style.text}>
-          {lastMessage?.content}        
+      )}
+
+      <View style={styles.rightContainer}>
+        <View style={styles.row}>
+          <Text style={styles.name}>{chatRoom.name}</Text>
+          <Text style={styles.timeText}>{time}</Text>
+        </View>
+        <Text numberOfLines={1} style={styles.messageText}>
+          {lastMessage?.content || "No messages yet."}
         </Text>
       </View>
     </TouchableOpacity>
   );
 }
 
-// Usage Example with Mock Data
-
-
-
-export const style = StyleSheet.create({
+// StyleSheet
+const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    padding: 10,
-    margin: 5,
-    backgroundColor: '#867fc1',
-    
-borderRadius:6
+    flexDirection: "row",
+    padding: 15,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    backgroundColor: "#41aded",
+    borderRadius: 15,
+    alignItems: "center",
   },
   image: {
     height: 50,
     width: 50,
-    borderRadius: 30,
+    borderRadius: 25,
     marginRight: 10,
   },
   badgeContainer: {
-    backgroundColor: '#3777f0',
+    backgroundColor: "#ff3b30",
     width: 20,
     height: 20,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
     left: 45,
-    top: 10,
+    top: 5,
   },
   badgeText: {
-    color: 'white',
-    fontSize: 12
+    color: "white",
+    fontSize: 12,
   },
   rightContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   name: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginBottom: 3,
-    color: 'white',
-
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "#fff",
   },
-  text: {
-    // color: 'grey',
-    color: 'white',
-
-  }
+  timeText: {
+    fontSize: 12,
+    color: "#f0f0f0",
+  },
+  messageText: {
+    color: "#e0e0e0",
+    fontSize: 14,
+    marginTop: 3,
+  },
 });

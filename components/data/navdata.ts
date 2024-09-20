@@ -17,7 +17,7 @@ export const NavBox = [
   {
     title: "Settings",
     icon: "cog",
-    screen: "calendar/calendar",
+    screen: "setting/setting",
   },
   {
     title: "Teacher",
@@ -32,16 +32,16 @@ export const NavBox = [
     screen: "SwitchForm/transport",
   },
   {
-    title: "Sign UP",
-    icon: "bus-alt",
+    title: "Parents",
+    icon: "hand-holding-heart",
 
-    screen: "SwitchForm/transport",
+    screen: "table/table",
   },
   {
-    title: "Transport",
-    icon: "bus-alt",
+    title: "Create",
+    icon: "address-card",
 
-    screen: "SwitchForm/transport",
+    screen: "auth/signup",
   },
 ];
 
@@ -50,11 +50,13 @@ export const screens = [
   { name: "calendar/calendar", title: "Event Calendar" },
   { name: "communication/chart", title: "Announcement" },
   { name: "communication/viewChart", title: "Chart" },
-  { name: "SwitchForm/teacher", title: "Teachers" },
+ // { name: "SwitchForm/teacher", title: "Teachers" },
   { name: "SwitchForm/transport", title: "Transports" },
   { name: "SwitchForm/notification", title: "Notification" },
-  { name: "auth/signup", title: "Sign Up" },
+  { name: "auth/signup", title: "Registration" },
   { name: "auth/signin", title: "Sign In" },
+  { name: "setting/setting", title: "Settings" },
+  { name: "notification/notification", title: "Notification" },
 
 
 ];

@@ -54,12 +54,11 @@ function Home() {
           {/* Navigation Boxes */}
           {NavBox.map((item, index) => (
             <TouchButton href={item.screen} key={index} style={styles.navBox}>
-            
-
                 <FontAwesome5 
                 size={30}
                   name={item.icon}
                 style={styles.icons} color="black" />
+                
               <Text style={styles.navTitle}>{item.title}</Text>
             </TouchButton     >
           ))}
@@ -73,7 +72,7 @@ function Home() {
             <Text style={styles.descriptionText}>{item}</Text>
             <View style={styles.descriptionLine} />
           </View>
-        ))}
+        ))}   
       </View> */}
     </View>
   );

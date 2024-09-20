@@ -20,7 +20,7 @@ export default function Communication() {
 
 const styles = StyleSheet.create({
   page: {
-    backgroundColor: "#d9eef0",
+    backgroundColor: "#e4f4f1",
     flex: 1,
     paddingTop: 10,
 
