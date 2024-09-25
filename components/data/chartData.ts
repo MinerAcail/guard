@@ -21,7 +21,7 @@ export const mockChatRooms = [
         content: "Field trip permission forms due tomorrow.",
         createdAt: "2024-09-02T12:30:00Z",
       },
-      newMessages: 5,
+      newMessages: 5, 
     },
     {
       id: "3",
@@ -223,213 +223,82 @@ export const mockChatRooms = [
     },
   ];
   
- export const messageData: MessageData = {
-    name: 'Chat Title',
+  export const messageData: MessageData = {
+    name: 'School Admin - Parent Chat',
     messages: [
-      // Existing messages
       {
         id: '1',
-        content: 'Hello, how are you? ipsum dolor sit amet consectetur adipisicing elit. Impedit ex mollitia, in quas natus, perferendis officiis suscipit reprehenderit excepturi atque laborum dolorem veniam obcaecati optio, adipisci accusantium beatae. Ab sit blanditiis odio repellat quo cumque vel, magni aperiam aliquam adipisci! ',
+        content: 'Hello, this is the school administrator. I hope you’re doing well. I wanted to check in regarding your child’s progress.',
         replies: [
-          { id: '1-1', content: 'I am good, thanks!' },
-          { id: '1-2', content: 'How about you?' },
-          { id: '1-3', content: 'Do you have any plans for the weekend?' }
+          { id: '1-1', content: 'Hello, I’m doing well, thank you!' },
+          { id: '1-2', content: 'I appreciate you reaching out. How is my child doing in class?' },
+          { id: '1-3', content: 'Is there anything I should be aware of?' }
         ]
       },
       {
         id: '2',
-        content: 'What are you up to today?',
+        content: 'Your child is doing well academically, but there are a few areas where we think they could use some improvement, particularly in math.',
         replies: [
-          { id: '2-1', content: 'Just working on a project.' },
-          { id: '2-2', content: 'Later, I plan to go for a walk.' }
+          { id: '2-1', content: 'Thank you for letting me know. Is there any additional support available?' },
+          { id: '2-2', content: 'I’ve noticed the same. We’ve been working on math at home as well.' }
         ]
       },
       {
         id: '3',
-        content: 'Have you seen the latest movie?',
+        content: 'We have some extra math tutoring sessions available after school. Would you be interested in enrolling your child?',
         replies: [
-          { id: '3-1', content: 'Yes, I watched it last night.' },
-          { id: '3-2', content: 'It was amazing! What did you think?' },
-          { id: '3-3', content: 'I haven\'t seen it yet. Was it good?' }
+          { id: '3-1', content: 'Yes, I think that would be very helpful.' },
+          { id: '3-2', content: 'That sounds great! How do I sign up?' }
         ]
       },
       {
         id: '4',
-        content: 'What’s your favorite cuisine?',
+        content: 'You can sign up through our parent portal, or I can send the registration form directly to you.',
         replies: [
-          { id: '4-1', content: 'I love Italian food!' },
-          { id: '4-2', content: 'Mexican is my favorite.' },
-          { id: '4-3', content: 'I enjoy a good sushi as well.' }
+          { id: '4-1', content: 'I’ll sign up through the portal, thank you!' },
+          { id: '4-2', content: 'Could you send me the form? I’ll fill it out as soon as possible.' }
         ]
       },
       {
         id: '5',
-        content: 'Any new hobbies lately?',
+        content: 'Also, the parent-teacher conference is coming up next week. Would you be available to attend?',
         replies: [
-          { id: '5-1', content: 'I’ve started learning guitar you? ipsum dolor sit amet consectetur adipisicing elit. Impedit ex mollitia, in quas natus, perferendis officiis suscipit reprehenderit excepturi atque laborum dolorem veniam obcaecati optio, adipisci accusantium beatae. Ab sit blanditiis odio repellat quo cumque vel,.' },
-          { id: '5-2', content: 'I’ve been trying my hand at painting.' }
+          { id: '5-1', content: 'Yes, I’ll be there. What time works best for the meeting?' },
+          { id: '5-2', content: 'Unfortunately, I’m not available next week. Is there another time we can meet?' }
         ]
       },
-      // Additional messages
       {
         id: '6',
-        content: 'What’s the weather like today?',
+        content: 'The conference is scheduled between 2 PM and 5 PM. I can adjust the time to fit your availability if necessary.',
         replies: [
-          { id: '6-1', content: 'It’s sunny and warm.' },
-          { id: '6-2', content: 'Expecting some rain later.' }
+          { id: '6-1', content: '2 PM works for me. I’ll see you then.' },
+          { id: '6-2', content: 'I’m free after 3 PM. Could we schedule for then?' }
         ]
       },
       {
         id: '7',
-        content: 'Have you read any good books recently?',
+        content: 'Of course! I’ll put you down for a 3:30 PM meeting next week. I look forward to discussing your child’s progress in more detail.',
         replies: [
-          { id: '7-1', content: 'Yes, I just finished a thriller novel.' },
-          { id: '7-2', content: 'I’m currently reading a sci-fi book.' }
+          { id: '7-1', content: 'Thank you so much! I appreciate your flexibility.' },
+          { id: '7-2', content: 'Great! I’m looking forward to it.' }
         ]
       },
       {
         id: '8',
-        content: 'What did you have for breakfast?',
+        content: 'One last thing, the school is organizing a field trip in a few weeks. We will send out permission slips soon. Please keep an eye out for that.',
         replies: [
-          { id: '8-1', content: 'I had pancakes and coffee.' },
-          { id: '8-2', content: 'Just a smoothie today.' }
+          { id: '8-1', content: 'I’ll make sure to fill out the form as soon as I receive it.' },
+          { id: '8-2', content: 'Sounds exciting! I’ll be on the lookout for the permission slip.' }
         ]
       },
       {
         id: '9',
-        content: 'Any plans for the upcoming holiday?',
+        content: 'Thank you for your time! Please let me know if you have any other questions or concerns.',
         replies: [
-          { id: '9-1', content: 'Planning a family trip to the mountains.' },
-          { id: '9-2', content: 'Thinking of staying home and relaxing.' }
-        ]
-      },
-      {
-        id: '10',
-        content: 'Do you have a favorite sports team?',
-        replies: [
-          { id: '10-1', content: 'Yes, I support the local football team.' },
-          { id: '10-2', content: 'I’m a fan of the basketball league.' }
-        ]
-      },
-      {
-        id: '11',
-        content: 'What kind of music do you enjoy?',
-        replies: [
-          { id: '11-1', content: 'I enjoy classical music.' },
-          { id: '11-2', content: 'I’m into rock and alternative.' }
-        ]
-      },
-      {
-        id: '12',
-        content: 'Do you like cooking?',
-        replies: [
-          { id: '12-1', content: 'Yes, I love trying out new recipes.' },
-          { id: '12-2', content: 'Not really, I prefer eating out.' }
-        ]
-      },
-      {
-        id: '13',
-        content: 'What’s your favorite movie genre?',
-        replies: [
-          { id: '13-1', content: 'I love action movies.' },
-          { id: '13-2', content: 'I prefer romantic comedies.' }
-        ]
-      },
-      {
-        id: '14',
-        content: 'Have you traveled anywhere interesting lately?',
-        replies: [
-          { id: '14-1', content: 'Yes, I went to Japan last month.' },
-          { id: '14-2', content: 'Not recently, but I’m planning a trip soon.' }
-        ]
-      },
-      {
-        id: '15',
-        content: 'What’s your favorite way to relax?',
-        replies: [
-          { id: '15-1', content: 'I like to read a good book.' },
-          { id: '15-2', content: 'Watching movies is my favorite.' }
-        ]
-      },
-      {
-        id: '16',
-        content: 'Do you enjoy outdoor activities?',
-        replies: [
-          { id: '16-1', content: 'Yes, I love hiking and biking.' },
-          { id: '16-2', content: 'Not really, I prefer indoor activities.' }
-        ]
-      },
-      {
-        id: '17',
-        content: 'What’s your go-to comfort food?',
-        replies: [
-          { id: '17-1', content: 'Mac and cheese is my favorite.' },
-          { id: '17-2', content: 'I enjoy a good bowl of soup.' }
-        ]
-      },
-      {
-        id: '18',
-        content: 'What kind of pets do you have?',
-        replies: [
-          { id: '18-1', content: 'I have a dog and a cat.' },
-          { id: '18-2', content: 'No pets, but I’m thinking of getting a cat.' }
-        ]
-      },
-      {
-        id: '19',
-        content: 'What’s the best meal you’ve ever had?',
-        replies: [
-          { id: '19-1', content: 'A seafood platter in a coastal town.' },
-          { id: '19-2', content: 'Homemade lasagna from my grandma.' }
-        ]
-      },
-      {
-        id: '20',
-        content: 'Do you prefer summer or winter?',
-        replies: [
-          { id: '20-1', content: 'I prefer summer for the warm weather.' },
-          { id: '20-2', content: 'Winter is my favorite, I love snow.' }
-        ]
-      },
-      {
-        id: '21',
-        content: 'What’s your favorite season?',
-        replies: [
-          { id: '21-1', content: 'Spring is my favorite season.' },
-          { id: '21-2', content: 'I love autumn with the changing leaves.' }
-        ]
-      },
-      {
-        id: '22',
-        content: 'Do you have a favorite holiday?',
-        replies: [
-          { id: '22-1', content: 'Christmas is my favorite holiday.' },
-          { id: '22-2', content: 'I really enjoy celebrating New Year\'s.' }
-        ]
-      },
-      {
-        id: '23',
-        content: 'What’s your favorite sport to watch?',
-        replies: [
-          { id: '23-1', content: 'I love watching soccer.' },
-          { id: '23-2', content: 'Basketball is my go-to sport.' }
-        ]
-      },
-      {
-        id: '24',
-        content: 'Do you enjoy visiting museums?',
-        replies: [
-          { id: '24-1', content: 'Yes, I love art museums.' },
-          { id: '24-2', content: 'Not really, I prefer other activities.' }
-        ]
-      },
-      {
-        id: '25',
-        content: 'What’s your favorite type of dessert?',
-        replies: [
-          { id: '25-1', content: 'Chocolate cake is the best.' },
-          { id: '25-2', content: 'I enjoy a good fruit tart.' }
+          { id: '9-1', content: 'Thank you! I will reach out if anything comes up.' },
+          { id: '9-2', content: 'I appreciate your help. Have a great day!' }
         ]
       }
     ]
   };
+  

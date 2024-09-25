@@ -28,7 +28,7 @@ const ViewChart: React.FC = () => {
   const renderReply = ({ item }: { item: Reply }) => (
     <View style={styles.reply}>
       <Text>{item.content}
-        
+      
       </Text>
     </View>
   );

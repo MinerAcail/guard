@@ -26,28 +26,26 @@ interface Student {
   lastName: string;
 }
 
-interface Location {
-  student_id: string;
-}
-
 interface ToggleLog {
   student_id: string;
-  staff_id?: string;
+  parent_id?: string;
   confirmed: boolean;
 }
 
-export default function Transport() {
+export default function ParentChild() {
   const { user } = useAuth();
-  const { postRequest } = useApiPostRequest({ url: "locationbystaff" });
+  const { postRequest } = useApiPostRequest({ url: "locationbyparent" });
   const [toggleLog, setToggleLog] = useState<ToggleLog[]>([]);
   const [switchStates, setSwitchStates] = useState<{ [key: string]: boolean }>(
     {}
-  ); // Local state for switches
+  ); // Local state for switch
 
-
-  // Fetching student data and location data
-  const { data: studentData, error: studentError, loading: studentLoading } = useFetchData("students/all");
-  const { data: locationData, error: locationError, loading: locationLoading } = useFetchData(`stafflocationbyday/all`);
+  const { data, error, loading } = useFetchData(`parentschild/${user?.id}`);
+  const {
+    data: locationData,
+    error: locationError,
+    loading: locationLoading,
+  } = useFetchData(`locationbyday/${user?.id}`);
 
   const { control } = useForm({
     resolver: zodResolver(FormSchema),
@@ -59,10 +57,10 @@ export default function Transport() {
   // Set initial switch states based on fetched location data
   useEffect(() => {
     if (locationData) {
-      const initialStates = locationData.reduce((acc, location) => {
-        acc[location.student_id] = true; // Set to true if a location entry exists
-        return acc;
-      }, {});
+      const initialStates = {};
+      locationData.forEach((location) => {
+        initialStates[location.student_id] = true; // Set true if location exists
+      });
       setSwitchStates(initialStates);
     }
   }, [locationData]);
@@ -71,13 +69,14 @@ export default function Transport() {
   const handleToggleChange = async (studentId: string, confirmed: boolean) => {
     const toggleInfo: ToggleLog = {
       student_id: studentId,
-      staff_id: user?.id,
+      parent_id: user?.id,
       confirmed,
     };
 
     try {
       // Send the toggle state to the backend
       await postRequest(toggleInfo);
+      console.log("Toggle Info submitted:", toggleInfo);
 
       // Update the local state with the toggle action
       setSwitchStates((prev) => ({
@@ -107,7 +106,9 @@ export default function Transport() {
 
       return (
         <View style={styles.studentContainer}>
-          <Text style={styles.header}>{`${item.firstName} ${item.lastName}`}</Text>
+          <Text
+            style={styles.header}
+          >{`${item.firstName} ${item.lastName}`}</Text>
           <Controller
             control={control}
             name={`student_${item.id}`} // Dynamic switch name
@@ -131,15 +132,15 @@ export default function Transport() {
   );
 
   // Handle loading state
-  if (studentLoading || locationLoading) {
+  if (loading || locationLoading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
   // Handle error state
-  if (studentError || locationError) {
+  if (error || locationError) {
     return (
       <Text style={styles.errorText}>
-        Error loading data: {studentError?.message || locationError?.message}
+        Error loading data: {error?.message || locationError?.message}
       </Text>
     );
   }
@@ -147,7 +148,7 @@ export default function Transport() {
   return (
     <View style={styles.container}>
       <SearchableFlatList
-        data={studentData || []}
+        data={data?.students || []}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         placeholder="Search by student name"

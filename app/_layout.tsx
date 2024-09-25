@@ -15,11 +15,20 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import SideMenu from "@/components/sideMenu";
 import { screens } from "@/components/data/navdata";
 import { ApiProvider } from "@/context/ApiContext";
+//import { AuthProvider } from "@/context/middleware/authContext";
+
+//import { AuthProvider, useAuth } from "@/context/middleware/authContext";
+import useProtectedRoute from "./protected";
+import { AuthProvider } from "@/context/middleware/authContext";
+//import { useProtectedRoute } from "./protected";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
+  //const isAuthorized = useProtectedRoute(["teacher"]);
+
   const colorScheme = useColorScheme();
   const { toggleMenu, menuAnimation, menuVisible } = useToggleMenu();
 
@@ -47,69 +56,83 @@ export default function RootLayout() {
   });
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <ApiProvider>
-        <SideMenu menuVisible={menuVisible} toggleMenu={toggleMenu} />
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{
-              headerTitleStyle: { fontFamily: "SpaceMono" },
-              headerTitleAlign: "center",
-              headerLeft: () => (
-                <TouchButton href={"/"} onPress={toggleMenu}>
-                  <FontAwesome name="bars" size={24} color="black" />
-                </TouchButton>
-              ),
-              headerRight: () => (
-                <TouchButton style={commonStyles.headerRightButton} href={"/notification/notification"} >
-                  <View style={commonStyles.badgeContainer}>
-                    <Text style={commonStyles.badgeText}>3</Text>
-                  </View>
-                  <FontAwesome name="bell" size={24} color="black" />
-                </TouchButton>
-              ),
-              title: "Home",
-            }}
-          />
-          <Stack.Screen name="+not-found" />
-          <Stack.Screen
-            name="SwitchForm/teacher"
-            options={{
-              headerTitleStyle: { fontFamily: "SpaceMono" },
-              headerTitleAlign: "center",
-              headerRight: () => (
-                <TouchButton href="/auth/signup">
-                  <FontAwesome name="address-card-o" size={24} color="black" />
-                </TouchButton>
-              ),
-              title: "Teachers",
-            }}
-          />
-          <Stack.Screen
-            name="table/table"
-            options={{
-              headerTitleStyle: { fontFamily: "SpaceMono" },
-              headerTitleAlign: "center",
-              headerRight: () => (
-                <TouchButton href="/communication/chart">
-                  <FontAwesome name="comments" size={24} color="black" />
-                </TouchButton>
-              ),
-              title: "Student Arrival",
-            }}
-          />
-          {/* Dynamically render the Stack screens */}
-          {screens.map((screen) => (
+    <ApiProvider>
+      <AuthProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <SideMenu menuVisible={menuVisible} toggleMenu={toggleMenu} />
+          <Stack>
             <Stack.Screen
-              key={screen.name}
-              name={screen.name}
-              options={commonHeaderOptions(screen.title)}
+              name="index"
+              options={{
+                headerTitleStyle: { fontFamily: "SpaceMono" },
+                headerTitleAlign: "center",
+                headerLeft: () => (
+                  <TouchButton href={"/"} onPress={toggleMenu}>
+                    <FontAwesome name="bars" size={24} color="black" />
+                  </TouchButton>
+                ),
+                headerRight: () => (
+                  <TouchButton
+                    style={commonStyles.headerRightButton}
+                    href={"/notification/notification"}
+                  >
+                    <View style={commonStyles.badgeContainer}>
+                      <Text style={commonStyles.badgeText}>3</Text>
+                    </View>
+                    <FontAwesome name="bell" size={24} color="black" />
+                  </TouchButton>
+                ),
+                title: "Home",
+              }}
             />
-          ))}
-        </Stack>
-      </ApiProvider>
-    </ThemeProvider>
+            <Stack.Screen name="+not-found" />
+            <Stack.Screen
+              name="SwitchForm/teacher"
+              options={{
+                headerTitleStyle: { fontFamily: "SpaceMono" },
+                headerTitleAlign: "center",
+                headerRight: () => (
+                  <TouchButton href="/auth/signup">
+                    <FontAwesome
+                      name="address-card-o"
+                      size={24}
+                      color="black"
+                    />
+                  </TouchButton>
+                ),
+                title: "Teachers",
+              }}
+              //redirect={!isAuthorized}
+            />
+            <Stack.Screen
+              name="table/table"
+              options={{
+                headerTitleStyle: { fontFamily: "SpaceMono" },
+                headerTitleAlign: "center",
+                headerRight: () => (
+                  <TouchButton href="/communication/chart">
+                    <FontAwesome name="comments" size={24} color="black" />
+                  </TouchButton>
+                ),
+                title: "Student Arrival",
+              }}
+            />
+            {/* Dynamically render the Stack screens */}
+            {screens.map((screen) => {
+              return(
+                <Stack.Screen
+                key={screen.name}
+                name={screen.name}
+                options={commonHeaderOptions(screen.title)}
+              />
+              )
+            })}
+          </Stack>
+        </ThemeProvider>
+      </AuthProvider>
+    </ApiProvider>
   );
 }
 
@@ -138,7 +161,7 @@ const commonStyles = StyleSheet.create({
     position: "absolute",
     left: -12,
     top: -10,
-    zIndex:1
+    zIndex: 1,
   },
   badgeText: {
     color: "white",

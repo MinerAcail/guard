@@ -26,3 +26,19 @@ export interface Student {
     superviseGrade: string;
   }
   
+
+ export type Parent = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    dateOfBirth: string; // Consider using Date if you prefer date objects
+    address: string;
+    gender?: 'male' | 'female'; // Optional // Adjust as necessary based on your use case
+    password: string;
+    position: "teacher";
+
+    confirmPassword?: string;
+    supervise: string[]; // Array of UUIDs as strings
+  };
+  

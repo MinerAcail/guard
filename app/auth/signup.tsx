@@ -1,24 +1,25 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Switch,
-} from "react-native";
-import { useRouter } from "expo-router";
-import { Picker } from "@react-native-picker/picker";
-import { Student, Staff } from "./types"; // Adjust the import path as needed
-import { useApiPostRequest } from "@/Request/useApiPostRequest";
-import { AntDesign } from "@expo/vector-icons";
-import Loader from "@/components/Animation/rotateLoader";
-import moment from "moment";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { styles } from "./style";
-// import DateTimePicker from '@react-native-community/datetimepicker';
-// Define your options outside of the component to avoid recreating them on every render
+  import React, { useState } from "react";
+  import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    Switch,
+  } from "react-native";
+  import { useRouter } from "expo-router";
+  import { Picker } from "@react-native-picker/picker";
+  import { Student, Staff ,Parent} from "./types"; // Adjust the import path as needed
+  import { useApiPostRequest } from "@/Request/useApiPostRequest";
+  import { AntDesign } from "@expo/vector-icons";
+  import Loader from "@/components/Animation/rotateLoader";
+  import moment from "moment";
+  import DateTimePickerModal from "react-native-modal-datetime-picker";
+  import { styles } from "./style";
+  import { useFetchData } from "@/Fetch/useFetchStudents";
+  // import DateTimePicker from '@react-native-community/datetimepicker';
+  // Define your options outside of the component to avoid recreating them on every render
   const grades = [
     { label: "Select grade", value: "" },
     { label: "1st", value: "1" },
@@ -40,6 +41,8 @@ import { styles } from "./style";
     { label: "Teacher", value: "teacher" },
     { label: "Admin", value: "admin" },
     { label: "Maintenance", value: "maintenance" },
+    { label: "Parent", value: "parent" },
+    { label: "Transport", value: "transport" },
   ];
 
   interface InputFieldProps {
@@ -102,6 +105,7 @@ import { styles } from "./style";
   export default function Signup() {
     const [position, setPosition] = useState<string>("");
     const [superviseGrade, setSuperviseGrade] = useState<string>("");
+    const [studentid, setStudentid] = useState<string>("");
     const [isGradeSelected, setIsGradeSelected] = useState<boolean>(true);
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -126,8 +130,10 @@ import { styles } from "./style";
     });
 
     const { data, loading, error, postRequest } = useApiPostRequest({
-      url: isGradeSelected ? "students" :"staffs",
+      url: isGradeSelected ? "students" : position =="parent" ?"parents": "staffs",
     });
+    const { data:studentsData} = useFetchData("students/all");
+
 
     const navigation = useRouter();
 
@@ -151,7 +157,7 @@ import { styles } from "./style";
         grade,
         parentContact,
       } = formData;
-    
+
       // Validation for required fields
       if (
         !firstName ||
@@ -165,14 +171,14 @@ import { styles } from "./style";
         alert("Please fill out all required fields");
         return;
       }
-    
+
       // Student registration
       if (isGradeSelected) {
         const studentData: Student = {
           ...formData,
           gender: formData.gender as "male" | "female" | undefined,
         };
-    
+
         try {
           await postRequest(studentData);
           console.log("Student registered successfully:", data);
@@ -182,7 +188,7 @@ import { styles } from "./style";
           alert("There was an error submitting the student form.");
         }
       }
-    
+
       // Staff registration
       if (!isGradeSelected) {
         // Check if passwords match
@@ -190,7 +196,7 @@ import { styles } from "./style";
           alert("Passwords do not match");
           return;
         }
-    
+
         const staffData: Staff = {
           ...formData,
           position: position as "teacher" | "admin" | "maintenance",
@@ -198,7 +204,7 @@ import { styles } from "./style";
           password,
           gender: formData.gender as "male" | "female" | undefined,
         };
-    
+
         try {
           await postRequest(staffData);
           console.log("Staff registered successfully:", data);
@@ -208,8 +214,31 @@ import { styles } from "./style";
           alert("There was an error submitting the staff form.");
         }
       }
+      if (position == "parent") {
+        // Check if passwords match
+        if (password !== confirmPassword) {
+          alert("Passwords do not match");
+          return;
+        }
+
+        const parentData:Parent = {
+          ...formData,
+          position: position as "teacher" ,
+          supervise:[studentid],
+          password,
+          gender: formData.gender as "male" | "female" | undefined,
+        };
+
+        try {
+          await postRequest(parentData);
+          console.log("Parent registered successfully:", data);
+          alert("Parent registration successful!");
+          navigation.push("/");
+        } catch (error) {
+          alert("There was an error submitting the staff form.");
+        }
+      }
     };
-    
 
     return (
       <ScrollView
@@ -218,11 +247,9 @@ import { styles } from "./style";
       >
         <View style={styles.formContainer}>
           <View style={styles.header}>
-           
-          <Text style={styles.subtitle}>
-  Please enter the required information before submitting.
-</Text>
-
+            <Text style={styles.subtitle}>
+              Please enter the required information before submitting.
+            </Text>
           </View>
           <View style={styles.form}>
             {/* Common Fields */}
@@ -292,7 +319,7 @@ import { styles } from "./style";
 
             {/* Switch between Student and Staff */}
             <View style={styles.switchContainer}>
-              <Text style={styles.label}>Toggle between student and Staff</Text>
+              <Text style={styles.label}>Toggle between student and (Staff / Parent)</Text>
               <Switch
                 trackColor={{ false: "#767577", true: "#1D4ED8" }}
                 thumbColor={isGradeSelected ? "#f5dd4b" : "#f4f3f4"}
@@ -341,12 +368,26 @@ import { styles } from "./style";
                   onValueChange={setPosition}
                   items={positions}
                 />
-                <PickerField
-                  label="Supervise Which Grade"
-                  selectedValue={superviseGrade}
-                  onValueChange={setSuperviseGrade}
-                  items={grades}
-                />
+                {position == "parent" && (
+                  <PickerField
+                    label="Students / Child"
+                    selectedValue={studentid}
+                    onValueChange={setStudentid}
+                  
+                    items={studentsData.map((student) => ({
+                      label: `${student.firstName} ${student.lastName}`,
+                      value: student.id,
+                    }))}
+                  />
+                )}
+                {position !== "parent" && position !== "transport" && (
+                  <PickerField
+                    label="Supervise Which Grade"
+                    selectedValue={superviseGrade}
+                    onValueChange={setSuperviseGrade}
+                    items={grades}
+                  />
+                )}
               </>
             )}
 
@@ -373,5 +414,3 @@ import { styles } from "./style";
       </ScrollView>
     );
   }
-
-

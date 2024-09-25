@@ -1,9 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
-export default function Component() {
-  const navigation = useNavigation();
+import { useAuth } from '@/context/middleware/authContext';
+import { useApi } from '@/context/ApiContext';
+import {  useRouter } from 'expo-router';
+import useProtectedRoute from '../protected';
+
+
+export default function LoginComponent() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const { login } = useAuth(); // Use login function from AuthContext
+  const apiUrl = useApi(); // Use API context to get base URL
+  const isAuthorized = useProtectedRoute(["teacher"]);
+
+  
+  const navigation = useRouter();
+  
+  const handleLogin = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        setErrorMessage('Invalid email or password');
+        return;
+      }
+
+      const data = await response.json();
+      const token = data.token;
+
+      // Use login function to set the token and user in AuthContext
+       login(token);
+       console.log("took",token);
+       
+      navigation.replace('/'); // Navigate to home page after login
+    } catch (error) {
+      setErrorMessage('Login failed. Please try again.');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -13,6 +57,7 @@ export default function Component() {
           <Text style={styles.subtitle}>Enter your email and password to access your account.</Text>
         </View>
         <View style={styles.form}>
+          {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Email</Text>
             <TextInput
@@ -20,7 +65,8 @@ export default function Component() {
               placeholder="m@example.com"
               keyboardType="email-address"
               autoCapitalize="none"
-            //   required={}
+              value={email}
+              onChangeText={setEmail}
             />
           </View>
           <View style={styles.inputGroup}>
@@ -29,17 +75,18 @@ export default function Component() {
               style={styles.input}
               placeholder="Enter your password"
               secureTextEntry
-            //   required
+              value={password}
+              onChangeText={setPassword}
             />
           </View>
-          <TouchableOpacity style={styles.button} onPress={() => console.log('Login pressed')}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.footer}>
           <Text style={styles.footerText}>
             Don&apos;t have an account?{" "}
-            <Text style={styles.link} onPress={() => {}}>
+            <Text style={styles.link} onPress={() => navigation.navigate('/auth/signup')}>
               Sign up
             </Text>
           </Text>
@@ -48,7 +95,6 @@ export default function Component() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -119,4 +165,5 @@ const styles = StyleSheet.create({
     color: '#1D4ED8',
     fontWeight: '600',
   },
+  error: { color: 'red', marginBottom: 10 },
 });
