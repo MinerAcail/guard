@@ -1,10 +1,9 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Image } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { NavBox } from "@/components/data/navdata";
 import TouchButton from "@/components/touchButton";
 import { useAuth } from "@/context/middleware/authContext";
-
 function Home() {
   const { isAuthenticated, user, logout } = useAuth();
 const type = user?.position
@@ -12,6 +11,11 @@ console.log("type",user );
 
   return (
     <View style={styles.container}>
+     <Image
+          style={styles.image}
+          source={require("../assets/images/logo.png")}
+         
+        />
       {/* Main Content */}
       <View style={styles.menuContainer}>
         <View style={styles.menuWrapper}> 
@@ -187,6 +191,11 @@ console.log("type",user );
       width: "60%",
       alignSelf: "center",
       marginTop: 5,
+    },
+    image: {
+      width: 100,
+      height: 100,
+      alignSelf: "center",
     },
   });
 

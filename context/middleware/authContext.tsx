@@ -78,7 +78,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const userData = await response.json();
     setUser(userData);
   };
+  const fetchALLParents = async (userId: string, jwtToken: string) => {
+   
   
+    
+  
+    setUser(userData);
+  };
 
   const login = async (jwtToken: string) => {
     const decoded = jwtDecode<DecodedToken>(jwtToken);

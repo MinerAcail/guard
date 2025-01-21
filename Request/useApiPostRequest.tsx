@@ -18,7 +18,7 @@ export const useApiPostRequest = ({ url, initialData }: UseApiPostRequestProps) 
     setError(null);
     try {
       const response = await fetch(`${apiUrl}/${url}`, {
-        method: "POST",
+        method: "Put",
         headers: {
           "Content-Type": "application/json",
         },

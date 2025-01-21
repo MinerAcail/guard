@@ -5,6 +5,7 @@ import {
   Switch,
   ActivityIndicator,
   StyleSheet,
+  Button,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
@@ -13,6 +14,7 @@ import { SearchableFlatList } from "@/components/SearchableFlatList";
 import { useFetchData } from "@/Fetch/useFetchStudents";
 import { useAuth } from "@/context/middleware/authContext";
 import { useApiPostRequest } from "@/Request/useApiPostRequest";
+import { useApi } from "@/context/ApiContext";
 
 // Zod schema
 const FormSchema = z.object({
@@ -32,130 +34,102 @@ interface ToggleLog {
   confirmed: boolean;
 }
 
+
 export default function ParentChild() {
   const { user } = useAuth();
-  const { postRequest } = useApiPostRequest({ url: "locationbyparent" });
-  const [toggleLog, setToggleLog] = useState<ToggleLog[]>([]);
-  const [switchStates, setSwitchStates] = useState<{ [key: string]: boolean }>(
-    {}
-  ); // Local state for switch
+  const apiUrl = useApi();
+  
+  // State management
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<any>(null);
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
-  const { data, error, loading } = useFetchData(`parentschild/${user?.id}`);
-  const {
-    data: locationData,
-    error: locationError,
-    loading: locationLoading,
-  } = useFetchData(`locationbyday/${user?.id}`);
+  const { data: studentsData, loading: studentsLoading, error: studentsError } = useFetchData("students/all");
 
-  const { control } = useForm({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      confirmed: true,
-    },
-  });
-
-  // Set initial switch states based on fetched location data
-  useEffect(() => {
-    if (locationData) {
-      const initialStates = {};
-      locationData.forEach((location) => {
-        initialStates[location.student_id] = true; // Set true if location exists
-      });
-      setSwitchStates(initialStates);
-    }
-  }, [locationData]);
-
-  // Function to handle toggling and posting the confirmation state
-  const handleToggleChange = async (studentId: string, confirmed: boolean) => {
-    const toggleInfo: ToggleLog = {
-      student_id: studentId,
-      parent_id: user?.id,
-      confirmed,
-    };
-
+  // Post request function
+  const postRequest = async (requestData: any) => {
+    setLoading(true);
+    setError(null);
     try {
-      // Send the toggle state to the backend
-      await postRequest(toggleInfo);
-      console.log("Toggle Info submitted:", toggleInfo);
-
-      // Update the local state with the toggle action
-      setSwitchStates((prev) => ({
-        ...prev,
-        [studentId]: confirmed, // Update the switch state immediately
-      }));
-
-      // Log the toggle state
-      setToggleLog((prev) => {
-        const existing = prev.find((log) => log.student_id === studentId);
-        if (existing) {
-          return prev.map((log) =>
-            log.student_id === studentId ? toggleInfo : log
-          );
-        }
-        return [...prev, toggleInfo];
+      const response = await fetch(`${apiUrl}/addsupervise`, {
+        method: "PUT", // Use PUT as the HTTP method
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
       });
-    } catch (err) {
-      console.error("Error submitting toggle info:", err);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Something went wrong");
+      }
+
+      const result = await response.json();
+      setData(result);  
+      return result;
+    } catch (error) {
+      console.error("Error:", error);
+      setError(error.message);
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Render item for the student list
-  const renderItem = useCallback(
-    ({ item }: { item: Student }) => {
-      const isConfirmed = switchStates[item.id] || false; // Use local state for switch
+  const handleCheckboxChange = (studentId: string) => {
+    setSelectedStudents((prev) =>
+      prev.includes(studentId)
+        ? prev.filter((id) => id !== studentId)
+        : [...prev, studentId]
+    );
+  };
 
-      return (
-        <View style={styles.studentContainer}>
-          <Text
-            style={styles.header}
-          >{`${item.firstName} ${item.lastName}`}</Text>
-          <Controller
-            control={control}
-            name={`student_${item.id}`} // Dynamic switch name
-            render={({ field: { onChange } }) => (
-              <View style={styles.switchContainer}>
-                <Text>{`${item.firstName} Confirmed Location`}</Text>
-                <Switch
-                  value={isConfirmed} // Current value of the switch based on local state
-                  onValueChange={(newValue) => {
-                    onChange(newValue); // Update the form control value
-                    handleToggleChange(item.id, newValue); // Handle toggle change and submit data
-                  }}
-                />
-              </View>
-            )}
-          />
-        </View>
-      );
-    },
-    [control, switchStates]
-  );
+  const handleSubmit = async () => {
+    try {
+      const payload = selectedStudents.map((studentId) => ({
+        studentId,
+      }));
+      console.log('payload', payload);
+      console.log('selectedStudents', selectedStudents);
 
-  // Handle loading state
-  if (loading || locationLoading) {
+      // Send the array of students to the backend
+      await postRequest(payload);
+      alert("Students successfully added to supervision!");
+    } catch (err) {
+      console.error("Error adding supervision:", err);
+      alert("Failed to add students to supervision.");
+    }
+  };
+
+  if (studentsLoading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  // Handle error state
-  if (error || locationError) {
-    return (
-      <Text style={styles.errorText}>
-        Error loading data: {error?.message || locationError?.message}
-      </Text>
-    );
+  if (studentsError) {
+    return <Text style={styles.errorText}>Error loading students: {studentsError.message}</Text>;
   }
 
   return (
     <View style={styles.container}>
-      <SearchableFlatList
-        data={data?.students || []}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        placeholder="Search by student name"
-      />
+      <Text style={styles.header}>Add Students to Supervise</Text>
+      {studentsData?.map((student: { id: string; firstName: string; lastName: string }) => (
+        <View key={student.id} style={styles.studentContainer}>
+          <Text>{`${student.firstName} ${student.lastName}`}</Text>
+          <Switch
+            value={selectedStudents.includes(student.id)}
+            onValueChange={() => handleCheckboxChange(student.id)}
+          />
+        </View>
+      ))}
+      <View style={styles.buttonContainer}>
+        <Button title="Add Supervise" onPress={handleSubmit} />
+      </View>
     </View>
   );
 }
+
+
 
 // Styles for the component
 const styles = StyleSheet.create({
@@ -183,6 +157,9 @@ const styles = StyleSheet.create({
   errorText: {
     color: "red",
     textAlign: "center",
+    marginTop: 20,
+  },
+  buttonContainer: {
     marginTop: 20,
   },
 });

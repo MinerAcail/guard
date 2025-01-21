@@ -22,8 +22,11 @@ import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
 import AudioPlayer from "./AudioPlayer";
 // import AudioPlayer from "../AudioPlayer";
-
-const MessageInput = () => {
+interface MessageInputProps {
+  onSend: (content: string) => void;
+  disabled?: boolean;
+}
+const MessageInput: React.FC<MessageInputProps> = ({ onSend, disabled }) => {
   const [message, setMessage] = useState("");
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const [image, setImage] = useState<string | null>(null);
@@ -172,6 +175,10 @@ const MessageInput = () => {
   };
 
   const sendMessage = () => {
+    if (message.trim()) {
+      onSend(message.trim());
+      setMessage('');
+    }
     // Here you would send the text message
     console.log("Message sent", message);
 
@@ -271,7 +278,9 @@ const MessageInput = () => {
           </Pressable>
         </View>
 
-        <Pressable onPress={onPress} style={styles.buttonContainer}>
+        <Pressable
+         disabled={!message.trim() || disabled}
+        onPress={onPress} style={styles.buttonContainer}>
           {message || image || soundURI ? (
             <Ionicons name="send" size={18} color="white" />
           ) : (

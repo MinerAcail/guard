@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Text, Image, View, TouchableOpacity, StyleSheet } from "react-native";
 import moment from "moment";
 import { useRouter } from "expo-router";
+import { Parent } from "@/app/auth/types";
 
 interface Message {
   id: string;
@@ -18,42 +19,47 @@ interface ChatRoom {
 }
 
 interface ChatRoomItemProps {
-  chatRoom: ChatRoom;
+  parent: Parent;
+  lastMessage?: Message;
 }
 
-export function ChatRoomItem({ chatRoom }: ChatRoomItemProps) {
-  const [lastMessage] = useState<Message | undefined>(chatRoom.lastMessage);
+export function ChatRoomItem({ parent, lastMessage }: ChatRoomItemProps) {
   const router = useRouter();
 
   const onPress = () => {
-    router.push("/communication/viewChart");
+    router.push({
+      pathname: "/communication/viewChart",
+      params: { parentId: parent.id }
+    });
   };
 
-  const time = moment(lastMessage?.createdAt).fromNow();
+  const time = lastMessage ? moment(lastMessage.createdAt).fromNow() : "23";
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
-      <Image source={{ uri: chatRoom.imageUri }} style={styles.image} />
-      
-      {/* Badge for New Messages */}
-      {chatRoom.newMessages > 0 && (
-        <View style={styles.badgeContainer}>
-          <Text style={styles.badgeText}>{chatRoom.newMessages}</Text>
-        </View>
-      )}
+      <Image 
+        source={{ 
+          uri: parent?.imageUri || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" 
+        }} 
+        style={styles.image} 
+      />
 
       <View style={styles.rightContainer}>
         <View style={styles.row}>
-          <Text style={styles.name}>{chatRoom.name}</Text>
-          <Text style={styles.timeText}>{time}</Text>
+          <Text style={styles.name}>{`${parent?.firstName} ${parent?.lastName}`}</Text>
+          <Text style={styles.name}>{`${parent?.id}`}</Text>
+          {lastMessage && <Text style={styles.timeText}>{time}</Text>}
         </View>
-        <Text numberOfLines={1} style={styles.messageText}>
-          {lastMessage?.content || "No messages yet."}
-        </Text>
+        {lastMessage && (
+          <Text numberOfLines={1} style={styles.messageText}>
+            {lastMessage.content}
+          </Text>
+        )}
       </View>
     </TouchableOpacity>
   );
 }
+
 
 // StyleSheet
 const styles = StyleSheet.create({

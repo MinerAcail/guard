@@ -40,7 +40,6 @@
     { label: "Select position", value: "" },
     { label: "Teacher", value: "teacher" },
     { label: "Admin", value: "admin" },
-    { label: "Maintenance", value: "maintenance" },
     { label: "Parent", value: "parent" },
     { label: "Transport", value: "transport" },
   ];
@@ -111,6 +110,7 @@
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [dateOfBirth, setDateOfBirth] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleDateConfirm = (date: Date) => {
       setDateOfBirth(moment(date).format("MM/DD/YYYY")); // Format the date as needed
@@ -147,6 +147,7 @@
     };
 
     const handleRegister = async () => {
+      if (isSubmitting) return;
       const {
         firstName,
         lastName,
@@ -157,12 +158,12 @@
         grade,
         parentContact,
       } = formData;
-
+    
       // Validation for required fields
       if (
         !firstName ||
         !lastName ||
-        !email ||
+        !email || // Ensure the user has entered an email
         !phoneNumber ||
         !dateOfBirth ||
         !address ||
@@ -171,14 +172,13 @@
         alert("Please fill out all required fields");
         return;
       }
-
-      // Student registration
+    
       if (isGradeSelected) {
         const studentData: Student = {
           ...formData,
           gender: formData.gender as "male" | "female" | undefined,
         };
-
+    
         try {
           await postRequest(studentData);
           console.log("Student registered successfully:", data);
@@ -188,15 +188,14 @@
           alert("There was an error submitting the student form.");
         }
       }
-
-      // Staff registration
+    
       if (!isGradeSelected) {
         // Check if passwords match
         if (password !== confirmPassword) {
           alert("Passwords do not match");
           return;
         }
-
+    
         const staffData: Staff = {
           ...formData,
           position: position as "teacher" | "admin" | "maintenance",
@@ -204,7 +203,7 @@
           password,
           gender: formData.gender as "male" | "female" | undefined,
         };
-
+        setIsSubmitting(true);
         try {
           await postRequest(staffData);
           console.log("Staff registered successfully:", data);
@@ -214,31 +213,36 @@
           alert("There was an error submitting the staff form.");
         }
       }
-      if (position == "parent") {
+    
+      if (position === "parent") {
         // Check if passwords match
         if (password !== confirmPassword) {
           alert("Passwords do not match");
           return;
         }
-
-        const parentData:Parent = {
+    
+        const parentData: Parent = {
           ...formData,
-          position: position as "teacher" ,
-          supervise:[studentid],
+          position: position as "teacher",
+          supervise: [studentid],
           password,
           gender: formData.gender as "male" | "female" | undefined,
         };
-
+        console.log("parentData", parentData);
+    
         try {
           await postRequest(parentData);
           console.log("Parent registered successfully:", data);
           alert("Parent registration successful!");
-          navigation.push("/");
         } catch (error) {
-          alert("There was an error submitting the staff form.");
+          alert("There was an error submitting the parent form.");
+        } finally {
+          setIsSubmitting(false);
         }
       }
     };
+    
+    
 
     return (
       <ScrollView

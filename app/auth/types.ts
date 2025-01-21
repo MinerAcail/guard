@@ -28,6 +28,7 @@ export interface Student {
   
 
  export type Parent = {
+  id?:string;
     firstName: string;
     lastName: string;
     email: string;
@@ -37,7 +38,7 @@ export interface Student {
     gender?: 'male' | 'female'; // Optional // Adjust as necessary based on your use case
     password: string;
     position: "teacher";
-
+    imageUri?:string;
     confirmPassword?: string;
     supervise: string[]; // Array of UUIDs as strings
   };

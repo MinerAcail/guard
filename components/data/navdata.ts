@@ -65,7 +65,7 @@ export const  NavBox = [
     icon: "address-card",
 
     screen: "auth/signup",
-    type:["teacher","admin"]
+    // type:["teacher","admin"]
 
   },
   {

@@ -1,7 +1,13 @@
 import MessageInput from '@/components/charts/MessageInput';
 import { messageData } from '@/components/data/chartData';
-import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { useMessages } from './useMessages';
+import { useParents } from './useParents';
+import { Parent } from '../auth/types';
+import moment from 'moment';
+import { useAuth } from '@/context/middleware/authContext';
 
 // Define types for message and reply
 interface Reply {
@@ -12,6 +18,10 @@ interface Reply {
 interface Message {
   id: string;
   content: string;
+  sender_id: string;
+  receiver_id: string;
+  status: string;
+  created_at: string;
   replies: Reply[];
 }
 
@@ -20,96 +30,238 @@ export interface MessageData {
   messages: Message[];
 }
 
-// Sample message data with type assertion
+
 
 
 const ViewChart: React.FC = () => {
-  // Function to render each reply
-  const renderReply = ({ item }: { item: Reply }) => (
-    <View style={styles.reply}>
-      <Text>{item.content}
-      
-      </Text>
-    </View>
-  );
+  const { parentId } = useLocalSearchParams();
+  const { isAuthenticated, user, logout } = useAuth();
+  const userid = user?.id;
+  const isParent = user?.position === "parent";
 
-  // Function to render each message
-  const renderMessage = ({ item }: { item: Message }) => (
-    <View style={styles.messageContainer}>
-      <View
-        style={[
-          styles.message,
-          item.replies.length ? styles.messageWithReplies : null,
-          item.replies.length > 0 ? styles.messageWithReplies : null,
-          { alignSelf: item.replies.length ? 'flex-start' : 'flex-end' }
-        ]}
-      >
-        <Text>{item.content}</Text>
+  const { messages, sendMessage, loading: messagesLoading } = useMessages();
+  const { parents, loading: parentsLoading } = useParents();
+  const [currentParent, setCurrentParent] = useState<Parent | null>(null);
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+console.log("messages",messages);
+
+  useEffect(() => {
+    const targetId = isParent ? userid : parentId;
+    if (messages && targetId) {
+      const filteredMessages = messages
+        .filter(
+          msg => msg.sender_id === targetId || msg.receiver_id === targetId
+        )
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setChatMessages(filteredMessages);
+    }
+  }, [messages, parentId, userid, isParent]);
+
+  useEffect(() => {
+    if (isParent) {
+      const parent = parents.find(p => p.id === userid);
+      setCurrentParent(parent || null);
+    } else if (parentId) {
+      const parent = parents.find(p => p.id === parentId);
+      setCurrentParent(parent || null);
+    }
+  }, [parents, parentId, userid, isParent]);
+
+  const handleSendMessage = async (content: string) => {
+    
+    const targetId = isParent ? userid : parentId;
+    console.log("content",content,"targetId",targetId?.toString());
+    if (!targetId || !content.trim()) {
+      console.warn("Invalid message data");
+      return;
+    }
+    try {
+      await sendMessage(content.trim(), targetId.toString());
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      // Add a toast notification here if necessary
+    }
+  };
+
+  if (messagesLoading || parentsLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
-      {item.replies.length > 0 && (
-        <FlatList
-          data={item.replies}
-          renderItem={renderReply}
-          keyExtractor={(reply) => reply.id}
-          style={styles.replyList}
-        />
-      )}
-    </View>
-  );
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      {/* <Text style={styles.title}>{messageData.name}</Text> */}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    >
+      {currentParent && (
+        <View style={styles.header}>
+          <Text style={styles.headerText}>
+            {`${currentParent.firstName} ${currentParent.lastName}`}
+          </Text>
+        </View>
+      )}
+
       <FlatList
-        data={messageData.messages}
-        renderItem={renderMessage}
-        keyExtractor={(item) => item.id}
+        data={chatMessages}
+        renderItem={({ item }) => (
+          <View
+            style={[
+              styles.messageContainer,
+              item.sender_id === (isParent ? userid : parentId)
+                ? styles.sentMessageContainer
+                : styles.receivedMessageContainer,
+            ]}
+          >
+            <View
+              style={[
+                styles.messageBubble,
+                item.sender_id === (isParent ? userid : parentId)
+                  ? styles.sentBubble
+                  : styles.receivedBubble,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.messageText,
+                  item.sender_id === (isParent ? userid : parentId)
+                    ? styles.sentMessageText
+                    : styles.receivedMessageText,
+                ]}
+              >
+                {item.content}
+              </Text>
+              <Text style={styles.timeText}>
+                {moment(item.created_at).format("HH:mm")}
+              </Text>
+            </View>
+          </View>
+        )}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.messagesList}
+        inverted
       />
 
-      <MessageInput />
-    </View>
+      <MessageInput
+        onSend={handleSendMessage}
+        disabled={messagesLoading}
+      />
+    </KeyboardAvoidingView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  header: {
+    padding: 15,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#000',
   },
   messageContainer: {
-    marginBottom: 15,
-    // flexDirection: 'row',
-    alignItems: 'flex-start',
+    marginVertical: 8,
+    flexDirection: 'row',
   },
-  message: {
+  sentMessageContainer: {
+    justifyContent: 'flex-end',
+    alignSelf: 'flex-end',
+  },
+  receivedMessageContainer: {
+    justifyContent: 'flex-start',
+    alignSelf: 'flex-start',
+  },
+  messageBubble: {
+    maxWidth: '70%',
     padding: 10,
-    borderRadius: 10,
-    maxWidth: '80%',
+    borderRadius: 15,
   },
-  messageWithReplies: {
-    marginBottom: 5,
+  sentBubble: {
+    backgroundColor: '#DCF8C6',
+    borderTopRightRadius: 0,
   },
-  reply: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-   
-    borderRadius: 5,
-    marginVertical: 2,
-    marginHorizontal: 50,
-    // paddingHorizontal:40
-    
-    // width:"auto",
-    // height:100
+  receivedBubble: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 0,
   },
-  replyList: {
+  messageText: {
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  sentMessageText: {
+    color: '#000000',
+  },
+  receivedMessageText: {
+    color: '#333333',
+  },
+  timeText: {
+    fontSize: 12,
+    color: '#888',
+    textAlign: 'right',
     marginTop: 5,
-  }
+  },
+  messagesList: {
+    padding: 15,
+  },
+
+  sentMessage: {
+    justifyContent: 'flex-end',
+  },
+  receivedMessage: {
+    justifyContent: 'flex-start',
+  },
+  
+  inputContainer: {
+    padding: 10,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    maxHeight: 100,
+    marginRight: 10,
+  },
+  sendButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  sendButtonDisabled: {
+    backgroundColor: '#B0BEC5',
+  },
+  sendButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  
 });
+
+
+
 
 export default ViewChart;
