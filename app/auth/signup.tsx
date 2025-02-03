@@ -1,4 +1,4 @@
-  import React, { useState } from "react";
+  import React, { useEffect, useState } from "react";
   import {
     View,
     Text,
@@ -39,6 +39,7 @@
   const positions = [
     { label: "Select position", value: "" },
     { label: "Teacher", value: "teacher" },
+    { label: "Security", value: "security" },
     { label: "Admin", value: "admin" },
     { label: "Parent", value: "parent" },
     { label: "Transport", value: "transport" },
@@ -51,6 +52,7 @@
     onChangeText?: (text: string) => void;
     keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
     secureTextEntry?: boolean;
+    isGradeSelected?: boolean;
   }
 
   const InputField: React.FC<InputFieldProps> = ({
@@ -60,16 +62,19 @@
     onChangeText,
     keyboardType,
     secureTextEntry,
+    isGradeSelected
   }) => (
     <View style={styles.inputGroup}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, isGradeSelected ? styles.disabledInput : null]}
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType}
         secureTextEntry={secureTextEntry}
+        
+        // style={isGradeSelected ? styles.disabledInput : null}
       />
     </View>
   );
@@ -112,6 +117,7 @@
     const [dateOfBirth, setDateOfBirth] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+
     const handleDateConfirm = (date: Date) => {
       setDateOfBirth(moment(date).format("MM/DD/YYYY")); // Format the date as needed
       handleInputChange("dateOfBirth", moment(date).format("MM/DD/YYYY"));
@@ -128,7 +134,22 @@
       grade: "",
       parentContact: "",
     });
-
+    useEffect(() => {
+      if (!isGradeSelected) {
+        // Generate email from first and last name
+        const cleanFirstName = formData.firstName.toLowerCase().replace(/\s+/g, '.');
+        const generatedEmail = `${cleanFirstName}@school.com`;
+        
+        // Only update if email hasn't been modified manually
+        if (!formData.email.includes('@school.com')) {
+          setFormData(prev => ({
+            ...prev,
+            email: generatedEmail
+          }));
+        }
+      }
+    }, [formData.firstName, isGradeSelected]);
+    
     const { data, loading, error, postRequest } = useApiPostRequest({
       url: isGradeSelected ? "students" : position =="parent" ?"parents": "staffs",
     });
@@ -254,6 +275,16 @@
             <Text style={styles.subtitle}>
               Please enter the required information before submitting.
             </Text>
+             {/* Switch between Student and Staff */}
+             <View style={styles.switchContainer}>
+              <Text style={styles.label}>Toggle between student and (Staff / Parent)</Text>
+              <Switch
+                trackColor={{ false: "#767577", true: "#1D4ED8" }}
+                thumbColor={isGradeSelected ? "#f5dd4b" : "#f4f3f4"}
+                onValueChange={toggleSwitch}
+                value={isGradeSelected}
+              />
+            </View>
           </View>
           <View style={styles.form}>
             {/* Common Fields */}
@@ -271,13 +302,17 @@
                 onChangeText={(text) => handleInputChange("lastName", text)}
               />
             </View>
+            {!isGradeSelected &&
+            
             <InputField
               value={formData.email}
               onChangeText={(text) => handleInputChange("email", text)}
               label="Email"
               placeholder="m@example.com"
               keyboardType="email-address"
+              // style={isGradeSelected ? styles.disabledInput : null}
             />
+            }
             <InputField
               label="Phone Number"
               placeholder="(123) 456-7890"
@@ -321,16 +356,7 @@
               ]}
             />
 
-            {/* Switch between Student and Staff */}
-            <View style={styles.switchContainer}>
-              <Text style={styles.label}>Toggle between student and (Staff / Parent)</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#1D4ED8" }}
-                thumbColor={isGradeSelected ? "#f5dd4b" : "#f4f3f4"}
-                onValueChange={toggleSwitch}
-                value={isGradeSelected}
-              />
-            </View>
+           
 
             {/* Conditionally render Student-specific Fields */}
             {isGradeSelected ? (

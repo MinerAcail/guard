@@ -9,14 +9,14 @@ export const  NavBox = [
     title: "Announcement",
     icon: "comments",
     screen: "communication/chart",
-    type:["teacher","parent","admin"]
+    type:["teacher","parent","admin","security"]
 
   },
   {
     title: "Maps",
     icon: "map",
     screen: "map/map",
-    type:["admin","transport"]
+    type:["admin","transport","security"]
 
   },
   {
@@ -27,7 +27,7 @@ export const  NavBox = [
 
   },
   {
-    title: "Teacher",
+    title: "student Account",
     icon: "chalkboard-teacher",
 
     screen: "SwitchForm/teacher",

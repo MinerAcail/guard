@@ -43,6 +43,7 @@ console.log("type",user );
                 </TouchButton>
               );
             }
+            
             // Skip "Sign Out" if the user is not authenticated
             if (item.title === "Sign Out" && !isAuthenticated) {
               return null;

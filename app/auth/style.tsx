@@ -20,6 +20,10 @@ export const styles = StyleSheet.create({
       shadowRadius: 4,
       elevation: 5,
     },
+    disabledInput: {
+      backgroundColor: '#f0f0f0',
+      opacity: 0.8,
+    },
     header: {
       marginBottom: 24,
       textAlign: "center",

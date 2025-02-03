@@ -2,7 +2,7 @@ import { Mapdata } from '@/components/data/mapData';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Region } from 'react-native-maps';
-import { FontAwesome } from '@expo/vector-icons'; // or 'react-native-vector-icons/FontAwesome'
+import { AntDesign, FontAwesome } from '@expo/vector-icons'; // or 'react-native-vector-icons/FontAwesome'
 
 interface BusLocation {
   id: string;
@@ -17,15 +17,16 @@ interface StudentLocation {
   latitude: number;
   longitude: number;
 }
-
 function Map() {
   const [busLocations, setBusLocations] = useState<BusLocation[]>([]);
   const [studentLocations, setStudentLocations] = useState<StudentLocation[]>([]);
+  const [external, setExternal] = useState<StudentLocation[]>([]);
 
   useEffect(() => {
     // Simulate fetching Mapdata from backend
     setBusLocations(Mapdata.buses);
     setStudentLocations(Mapdata.students);
+    setExternal(Mapdata.external);
   }, []);
 
   return (
@@ -67,6 +68,22 @@ function Map() {
             </View>
           </Marker>
         ))}
+                {external.map((student) => (
+          <Marker
+            key={student.id}
+            coordinate={{ latitude: student.latitude, longitude: student.longitude }}
+            title={student.name}
+            description={`Number Plate: ${student.id}`}
+            pinColor="blue"
+          >
+            <View style={styles.busMarker}>
+<AntDesign name="car" size={24} color="black" /> 
+
+              {/* <FontAwesome name="child" size={40} color="black" /> */}
+            </View>
+          </Marker>
+        ))}
+
       </MapView>
     </View>
   );

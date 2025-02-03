@@ -13,6 +13,17 @@ export const Mapdata = {
       { id: 'Bus 9', latitude: 5.6030, longitude: -0.1790, route: 'Route I' },
       { id: 'Bus 10', latitude: 5.6010, longitude: -0.1770, route: 'Route J' },
     ],
+    external: [
+      { id: 'GT-7676-56', name: 'David Wilson', latitude: 5.6059, longitude: -0.1824 },
+      { id: 'GT-7676-57', name: 'Sophia Lee', latitude: 5.6028, longitude: -0.1796 },
+      { id: 'GT-7676-58', name: 'James Taylor', latitude: 5.6015, longitude: -0.1819 },
+      { id: 'GT-7676-59', name: 'Olivia Martinez', latitude: 5.6063, longitude: -0.1932 },
+      { id: 'GT-7676-510', name: 'Benjamin Harris', latitude: 5.6089, longitude: -0.1858 },
+      { id: 'GT-7676-511', name: 'Chloe Clark', latitude: 5.6038, longitude: -0.1894 },
+      { id: 'GT-7676-512', name: 'Lucas King', latitude: 5.6041, longitude: -0.1912 },
+      { id: 'GT-7676-513', name: 'Grace Wright', latitude: 5.6055, longitude: -0.1908 },
+    ],
+    
       students: [
       { id: '767651', name: 'John Doe', latitude: 5.6098, longitude: -0.1936 },
       { id: '767652', name: 'Jane Smith', latitude: 5.6067, longitude: -0.1900 },
