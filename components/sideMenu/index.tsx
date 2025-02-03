@@ -9,13 +9,14 @@ import {
 } from "react-native";
 import Animated from "react-native-reanimated";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 import { NavBox } from "../data/navdata"; // Adjust import as needed
 import {
   PanGestureHandler,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import { useAuth } from "@/context/middleware/authContext";
+import { useNavigation } from "expo-router";
 
 // Define props for SideMenu
 interface SideMenuProps {

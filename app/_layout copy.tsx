@@ -26,6 +26,7 @@ import { AuthProvider } from "@/context/middleware/authContext";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
   //const isAuthorized = useProtectedRoute(["teacher"]);
 
   const colorScheme = useColorScheme();
@@ -57,74 +58,78 @@ export default function RootLayout() {
   return (
     <ApiProvider>
       <AuthProvider>
-      <ThemeProvider
+        <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
           <SideMenu menuVisible={menuVisible} toggleMenu={toggleMenu} />
-
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{
-              headerTitleStyle: { fontFamily: "SpaceMono" },
-              headerTitleAlign: "center",
-              headerLeft: () => (
-                <TouchButton href={"/"} onPress={toggleMenu}>
-                  <FontAwesome name="bars" size={24} color="black" />
-                </TouchButton>
-              ),
-              headerRight: () => (
-                <TouchButton
-                  style={commonStyles.headerRightButton}
-                  href={"/notification/notification"}
-                >
-                  <View style={commonStyles.badgeContainer}>
-                    <Text style={commonStyles.badgeText}>3</Text>
-                  </View>
-                  <FontAwesome name="bell" size={24} color="black" />
-                </TouchButton>
-              ),
-              title: "Home",
-            }}
-          />{" "}
-          <Stack.Screen
-            name="SwitchForm/teacher"
-            options={{
-              headerTitleStyle: { fontFamily: "SpaceMono" },
-              headerTitleAlign: "center",
-              headerRight: () => (
-                <TouchButton href="/auth/signup">
-                  <FontAwesome name="address-card-o" size={24} color="black" />
-                </TouchButton>
-              ),
-              title: "Teachers",
-            }}
-            //redirect={!isAuthorized}
-          />{" "}
-          <Stack.Screen
-            name="table/table"
-            options={{
-              headerTitleStyle: { fontFamily: "SpaceMono" },
-              headerTitleAlign: "center",
-              headerRight: () => (
-                <TouchButton href="/communication/chart">
-                  <FontAwesome name="comments" size={24} color="black" />
-                </TouchButton>
-              ),
-              title: "Student Arrival",
-            }}
-          />
-          {screens.map((screen) => {
-            return (
-              <Stack.Screen
+          <Stack>
+            <Stack.Screen
+              name="index"
+              options={{
+                headerTitleStyle: { fontFamily: "SpaceMono" },
+                headerTitleAlign: "center",
+                headerLeft: () => (
+                  <TouchButton href={"/"} onPress={toggleMenu}>
+                    <FontAwesome name="bars" size={24} color="black" />
+                  </TouchButton>
+                ),
+                headerRight: () => (
+                  <TouchButton
+                    style={commonStyles.headerRightButton}
+                    href={"/notification/notification"}
+                  >
+                    <View style={commonStyles.badgeContainer}>
+                      <Text style={commonStyles.badgeText}>3</Text>
+                    </View>
+                    <FontAwesome name="bell" size={24} color="black" />
+                  </TouchButton>
+                ),
+                title: "Home",
+              }}
+            />
+            <Stack.Screen name="+not-found" />
+            <Stack.Screen
+              name="SwitchForm/teacher"
+              options={{
+                headerTitleStyle: { fontFamily: "SpaceMono" },
+                headerTitleAlign: "center",
+                headerRight: () => (
+                  <TouchButton href="/auth/signup">
+                    <FontAwesome
+                      name="address-card-o"
+                      size={24}
+                      color="black"
+                    />
+                  </TouchButton>
+                ),
+                title: "Teachers",
+              }}
+              //redirect={!isAuthorized}
+            />
+            <Stack.Screen
+              name="table/table"
+              options={{
+                headerTitleStyle: { fontFamily: "SpaceMono" },
+                headerTitleAlign: "center",
+                headerRight: () => (
+                  <TouchButton href="/communication/chart">
+                    <FontAwesome name="comments" size={24} color="black" />
+                  </TouchButton>
+                ),
+                title: "Student Arrival",
+              }}
+            />
+            {/* Dynamically render the Stack screens */}
+            {screens.map((screen) => {
+              return(
+                <Stack.Screen
                 key={screen.name}
                 name={screen.name}
                 options={commonHeaderOptions(screen.title)}
               />
-            );
-          })}
-          <Stack.Screen name="+not-found" />
-        </Stack>
+              )
+            })}
+          </Stack>
         </ThemeProvider>
       </AuthProvider>
     </ApiProvider>
